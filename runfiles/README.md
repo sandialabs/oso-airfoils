@@ -24,3 +24,20 @@ Running files must abide by a specific keycode pattern.  Note that keys need not
 - `r(#)##` (optional) -- The lift to drag ratio that must be achieved in the 'rough' analysis case.  May be a two digit number (eg `r98`) or a three digit number (eg `r125`).  Default is determined by the table below.
 - `e(#)#` (optional) -- The Reynolds number (in millions) to run the case at.  `e1` would be one million, `e6` six million, `e12` twelve million, `e22` twenty-two million, etc.  Code has only been tested up to 18 million.  Default is determined by the table below.
 - `i###` (optional, default=1200) -- The number of generations (or iterations) to run the genetic algorithm for.  Default is 1200.
+
+
+Default Table
+-------------
+
+These are the defaults if no value is provided for the optional inputs
+
+| Tau |  Re  | CL  | Rough L/D | 
+| :-: | :--: | :-: | :-------: |
+| 15  | 10e6 | 1.5 | 124       |
+| 18  | 10e6 | 1.5 | 123       |
+| 21  | 12e6 | 1.5 | 122       |
+| 24  | 13e6 | 1.4 | 118       |
+| 27  | 16e6 | 1.3 | 109       |
+| 30  | 18e6 | 1.2 |  98       |
+| 33  | 16e6 | 1.2 |  90       |
+| 36  | 13e6 | 1.2 |  78       |
