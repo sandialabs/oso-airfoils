@@ -1,0 +1,154 @@
+Case  1:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, Normal CL
+Case  2:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, Normal CL
+Case  3:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, Normal CL
+Case  4:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, CL 1.2 for 15%-27%
+Case  5:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, CL 1.2 for 15%-27%
+Case  6:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, CL 1.2 for 15%-27%
+Case  7:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, Only 21% at 1.4 CL
+Case  8:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, Only 21% at 1.4 CL
+Case  9:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, Only 21% at 1.4 CL
+Case 10:  FFA TE Gap, Keep TE Wedge Constraint, Minimize L/D Gap maximize other L/D
+Case 11:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, Normal CL, flattened upper surface constraint
+
+
+Added: 
+Constraint that the LE radii cannot be further than 1.5 from each other
+A lower TE curvature constraint (must be straight or concave)
+Moved the max thickenss location back to 0.3 based on other airfoils (and that this constraint keeps being active)
+Increase populaiton to 260
+Decrease iteration count to 200
+
+Also:
+seeded original population with the full batch of airfoils (thickness stretched)
+And fixed original sampling to have ony small invalid LE values for the LE constraint
+
+Case 12:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, Normal CL
+Case 13:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, Normal CL
+Case 14:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, Normal CL
+Case 15:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, CL 1.2 for 15%-27%
+Case 16:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, CL 1.2 for 15%-27%
+Case 17:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, CL 1.2 for 15%-27%
+Case 18:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, Only 21% at 1.4 CL
+Case 19:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, Only 21% at 1.4 CL
+Case 20:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, Only 21% at 1.4 CL
+Case 21:  FFA TE Gap, Keep TE Wedge Constraint, Minimize L/D Gap maximize other L/D
+Case 22:  FFA TE Gap, Keep TE Wedge Constraint, Equal L/D Weighting, Normal CL, flattened upper surface constraint
+Case 23:  FFA TE Gap, Keep TE Wedge Constraint,   4:1 L/D Weighting, Normal CL, flattened upper surface constraint
+Case 24:  FFA TE Gap, Keep TE Wedge Constraint,          Full Rough, Normal CL, flattened upper surface constraint
+
+Move the back flat constraint to be shorter (also change this to be convex, not flat--impose as constraint)
+add a delta between back two kulfan parameters constraint (tes are too thin) (but also need max to prevent large wedges)
+    >.05, <0.18
+
+Case 25:  FFA TE Gap, Keep TE Wedge Constraint,  4:1 L/D Weighting, Normal CL
+Case 26:  FFA TE Gap, Keep TE Wedge Constraint, 12:1 L/D Weighting, Normal CL
+Case 27:  FFA TE Gap, Keep TE Wedge Constraint,         Full Rough, Normal CL
+Case 28:  FFA TE Gap, Keep TE Wedge Constraint,  4:1 L/D Weighting, CL 1.2 for 15%-27%
+Case 29:  FFA TE Gap, Keep TE Wedge Constraint, 12:1 L/D Weighting, CL 1.2 for 15%-27%
+Case 30:  FFA TE Gap, Keep TE Wedge Constraint,         Full Rough, CL 1.2 for 15%-27%
+
+
+Enforce a constraint on the delta L/D_max_clean and rough L/D at that same angle of attack
+Case 31:  FFA TE Gap, 12:1 L/D Weighting, Normal CL
+
+Revert back to 4:1
+Case 32:  FFA TE Gap, 4:1 L/D Weighting, Normal CL
+
+Revert to 4:1 and remove the 40% change (should be Case 25 plus the TE constraint)
+Case 33:  FFA TE Gap, 4:1 L/D Weighting, Normal CL
+
+Change to 6:1 and remove the 40% change (should be Case 25)
+Case 34:  FFA TE Gap, 6:1 L/D Weighting, Normal CL
+
+
+Need:
+Modify xfoil to run without restart
+Increase number of shape parameters
+Remove TE constraint?
+Make 30% airfoil have lower surface aft coefficient of negative value?
+Increase mutation in the GA?
+
+
+remove TE constraints, do 6:1
+
+
+*****Remvove all TE thickness constraints
+
+Case 35: 6:1 No TE cons, 4shape params
+Case 36: 4:1 8 shape parameters with TE constraints (reduced?)
+Case 37: 4:1 8 shape parameters without TE constraints (21%?)
+
+Case 38: 4  :1 No TE cons, 4shape params (same as Case 13)
+Case 39: 4.5:1 No TE cons, 4shape params
+Case 40: 5  :1 No TE cons, 4shape params
+Case 41: 5.5:1 No TE cons, 4shape params
+Case 42: 6.5:1 No TE cons, 4shape params
+Case 43: 7  :1 No TE cons, 4shape params
+Case 44: 7.5:1 No TE cons, 4shape params
+Case 45: 8  :1 No TE cons, 4shape params
+
+
+
+*********Did a complete re-write of the objective function
+Case 50:  Total reboot attempt
+
+Case 50: revamp
+Case 51: added a constraint that penalizes flare out
+
+
+Case 52: changed weighting in the objective function (thresholds), change TE cone to 95% not 98%, did some other objective tweaks
+
+
+Case 53: Making each thickness have a unique objective function 
+
+Case 54: a rerun of case 53
+
+Case 55:  Changed the objective weights for the 27-36, and te gaps for 30-36
+
+Case 56:  Changed the objective weights for all
+
+Case 57:  Made rough L/D a lower constraint, decreased mutation rate to 10% (ga_functions, 259)
+
+Case 58:  Updated objective function, removed the flare out constraint, back to 30% mutation rate
+
+Case 59:  Tweaked objective 
+
+Case 60:  Changed objective again
+
+Case 61:  Changed to different pacc style, changed how randoms are generated, changed where temp files go
+
+Case 62:  Went to 8 upper and lower
+
+Case 63:  Adding CL and rough lod into the filename
+
+Case 64:  Added pre-seeded airfoil shapes to the original population
+
+
+
+Case 99: Only quick run changes
+Case 98: Changed the output to match
+Case 97: Updated most things but not the primary L/D objectives
+
+Case 96: Exactly Case 58
+Case 95: Removed all constraints from 96 (kept straight rejects)
+Case 94-80: incrementally added the constraints
+
+
+
+Add more rough weighting
+penalize clean above 200? 190?
+Re-do 30%
+spar location
+Rest of family
+
+
+rerun the 30
+send alan the full family for run on grid
+Begin to sweep over many CL input values
+Mess with the objective function to observe behavior for paper
+Constrain the angle of attack to match existing 22mw as bonus study
+
+spar integraion from the FFA paper---Needs to integrate blade design, do not do this now
+    Write a note on this
+
+
