@@ -20,6 +20,7 @@ filecodes = filecode.split('_')
 CL = None
 rLD = None
 re = None
+maxiter = 1200
 
 for fc in filecodes:
     if 'c' in fc:
@@ -36,6 +37,8 @@ for fc in filecodes:
         rLD = float(fc[1:])
     if 'e' in fc:
         re = float(fc[1:]) * 1e6
+    if 'i' in fc:
+        max_iter = int(fc[1:])
 
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
@@ -226,7 +229,7 @@ labels += [
     ]
 
 
-for i in range(1,1201):
+for i in range(1,maxiter+1):
     if rank == 0:
         cprint('Generation %d'%(i))
         pop_cache = copy.deepcopy(pop)
