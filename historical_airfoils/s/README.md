@@ -24,12 +24,101 @@ Sources
 
 Coordinate files are from AirfoilTools.com
 
+<table border="1">
+  <thead>
+    <tr>
+      <th rowspan="2">Wind Turbine</th>
+      <th rowspan="2">Airfoil-Thickness Category</th>
+      <th colspan="3">Airfoil</th>
+      <th rowspan="2">Reference</th>
+    </tr>
+    <tr>
+      <th>Primary</th>
+      <th>Tip</th>
+      <th>Root</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>3–10 m<br>Variable speed<br>Variable pitch</td>
+      <td>Thick</td>
+      <td>—</td>
+      <td>S822</td>
+      <td>S823</td>
+      <td>14</td>
+    </tr>
+    <tr>
+      <td>10–20 m<br>Variable speed<br>Variable pitch</td>
+      <td>Thin</td>
+      <td>S801</td>
+      <td>S802<br>S803</td>
+      <td>S804</td>
+      <td>9</td>
+    </tr>
+    <tr>
+      <td rowspan="2">10–20 m<br>Stall regulated</td>
+      <td>Thin</td>
+      <td>S805<br>S805A</td>
+      <td>S806<br>S806A</td>
+      <td>S807<br>S808</td>
+      <td>—</td>
+    </tr>
+    <tr>
+      <td>Thick</td>
+      <td>S819</td>
+      <td>S820</td>
+      <td>S821</td>
+      <td>13</td>
+    </tr>
+    <tr>
+      <td rowspan="2">20–30 m<br>Stall regulated</td>
+      <td>Thick</td>
+      <td>S809</td>
+      <td>S810</td>
+      <td>S811</td>
+      <td>10</td>
+    </tr>
+    <tr>
+      <td>Thick</td>
+      <td>S812</td>
+      <td>S813</td>
+      <td>S814<br>S815</td>
+      <td>10 and 11</td>
+    </tr>
+    <tr>
+      <td>20–40 m<br>Variable speed<br>Variable pitch</td>
+      <td>—</td>
+      <td>S825</td>
+      <td>S826</td>
+      <td>S814<br>S815</td>
+      <td>15 and 11</td>
+    </tr>
+    <tr>
+      <td>30–50 m<br>Stall regulated</td>
+      <td>Thick</td>
+      <td>S816</td>
+      <td>S817</td>
+      <td>S818</td>
+      <td>12</td>
+    </tr>
+    <tr>
+      <td>30–50 m<br>Stall regulated</td>
+      <td>—</td>
+      <td>S827</td>
+      <td>S828</td>
+      <td>S818</td>
+      <td>16 and 12</td>
+    </tr>
+    <tr>
+      <td>40–50 m<br>Variable speed<br>Variable pitch</td>
+      <td>Thick</td>
+      <td>S830</td>
+      <td>S831<br>S832</td>
+      <td>S818</td>
+      <td>17 and 12</td>
+    </tr>
+  </tbody>
+</table>
 
-| Item                   | Test     | Price |
-| :--------------------- | :------: | ----: |
-| Python Hat             |   True   | 23.99 |
-| SQL Hat                |   True   | 23.99 |
-| Codecademy Tee         |  False   | 19.99 |
-| Codecademy <br> Hoodie |  False   | 42.99 |
 
 
