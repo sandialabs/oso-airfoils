@@ -1,3 +1,112 @@
+Summary
+-------
+
+
+The following table from Somers (https://docs.nrel.gov/docs/fy05osti/36340.pdf) summarizes the NREL S-series airfoils:
+
+<table border="1">
+  <thead>
+    <tr>
+      <th rowspan="2">Diameter</th>
+      <th rowspan="2">Type</th>
+      <th rowspan="2">Airfoil-Thickness Category</th>
+      <th colspan="3">Airfoil</th>
+    </tr>
+    <tr>
+      <th>Primary</th>
+      <th>Tip</th>
+      <th>Root</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1-3 m</td>
+      <td>Variable speed<br>Variable pitch</td>
+      <td>-</td>
+      <td>S834</td>
+      <td>S833</td>
+      <td>S835</td>
+    </tr>
+    <tr>
+      <td>3–10 m</td>
+      <td>Variable speed<br>Variable pitch</td>
+      <td>Thick</td>
+      <td>—</td>
+      <td>S822</td>
+      <td>S823</td>
+    </tr>
+    <tr>
+      <td>10–20 m</td>
+      <td>Variable speed<br>Variable pitch</td>
+      <td>Thin</td>
+      <td>S801</td>
+      <td>S802<br>S803</td>
+      <td>S804</td>
+    </tr>
+    <tr>
+      <td rowspan="2">10–20 m</td>
+      <td rowspan="2">Stall regulated</td>
+      <td>Thin</td>
+      <td>S805<br>S805A</td>
+      <td>S806<br>S806A</td>
+      <td>S807<br>S808</td>
+    </tr>
+    <tr>
+      <td>Thick</td>
+      <td>S819</td>
+      <td>S820</td>
+      <td>S821</td>
+    </tr>
+    <tr>
+      <td rowspan="2">20–30 m</td>
+      <td rowspan="2">Stall regulated</td>
+      <td>Thick</td>
+      <td>S809</td>
+      <td>S810</td>
+      <td>S811</td>
+    </tr>
+    <tr>
+      <td>Thick</td>
+      <td>S812</td>
+      <td>S813</td>
+      <td>S814<br>S815</td>
+    </tr>
+    <tr>
+      <td>20–40 m</td>
+      <td>Variable speed<br>Variable pitch</td>
+      <td>—</td>
+      <td>S825</td>
+      <td>S826</td>
+      <td>S814<br>S815</td>
+    </tr>
+    <tr>
+      <td>30–50 m</td>
+      <td>Stall regulated</td>
+      <td>Thick</td>
+      <td>S816</td>
+      <td>S817</td>
+      <td>S818</td>
+    </tr>
+    <tr>
+      <td>30–50 m</td>
+      <td>Stall regulated</td>
+      <td>—</td>
+      <td>S827</td>
+      <td>S828</td>
+      <td>S818</td>
+    </tr>
+    <tr>
+      <td>40–50 m</td>
+      <td>Variable speed<br>Variable pitch</td>
+      <td>Thick</td>
+      <td>S830</td>
+      <td>S831<br>S832</td>
+      <td>S818</td>
+    </tr>
+  </tbody>
+</table>
+
+
 Sources
 -------
 
@@ -24,109 +133,6 @@ Sources
 
 Coordinate files are from AirfoilTools.com
 
-<table border="1">
-  <thead>
-    <tr>
-      <th rowspan="2">Diameter</th>
-      <th rowspan="2">Type</th>
-      <th rowspan="2">Airfoil-Thickness Category</th>
-      <th colspan="3">Airfoil</th>
-      <th rowspan="2">Reference</th>
-    </tr>
-    <tr>
-      <th>Primary</th>
-      <th>Tip</th>
-      <th>Root</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>3–10 m</td>
-      <td>Variable speed<br>Variable pitch</td>
-      <td>Thick</td>
-      <td>—</td>
-      <td>S822</td>
-      <td>S823</td>
-      <td>14</td>
-    </tr>
-    <tr>
-      <td>10–20 m</td>
-      <td>Variable speed<br>Variable pitch</td>
-      <td>Thin</td>
-      <td>S801</td>
-      <td>S802<br>S803</td>
-      <td>S804</td>
-      <td>9</td>
-    </tr>
-    <tr>
-      <td rowspan="2">10–20 m</td>
-      <td rowspan="2">Stall regulated</td>
-      <td>Thin</td>
-      <td>S805<br>S805A</td>
-      <td>S806<br>S806A</td>
-      <td>S807<br>S808</td>
-      <td rowspan="2">13</td>
-    </tr>
-    <tr>
-      <td>Thick</td>
-      <td>S819</td>
-      <td>S820</td>
-      <td>S821</td>
-    </tr>
-    <tr>
-      <td rowspan="2">20–30 m</td>
-      <td rowspan="2">Stall regulated</td>
-      <td>Thick</td>
-      <td>S809</td>
-      <td>S810</td>
-      <td>S811</td>
-      <td>10</td>
-    </tr>
-    <tr>
-      <td>Thick</td>
-      <td>S812</td>
-      <td>S813</td>
-      <td>S814<br>S815</td>
-      <td>10 and 11</td>
-    </tr>
-    <tr>
-      <td>20–40 m</td>
-      <td>Variable speed<br>Variable pitch</td>
-      <td>—</td>
-      <td>S825</td>
-      <td>S826</td>
-      <td>S814<br>S815</td>
-      <td>15 and 11</td>
-    </tr>
-    <tr>
-      <td>30–50 m</td>
-      <td>Stall regulated</td>
-      <td>Thick</td>
-      <td>S816</td>
-      <td>S817</td>
-      <td>S818</td>
-      <td>12</td>
-    </tr>
-    <tr>
-      <td>30–50 m</td>
-      <td>Stall regulated</td>
-      <td>—</td>
-      <td>S827</td>
-      <td>S828</td>
-      <td>S818</td>
-      <td>16 and 12</td>
-    </tr>
-    <tr>
-      <td>40–50 m</td>
-      <td>Variable speed<br>Variable pitch</td>
-      <td>Thick</td>
-      <td>S830</td>
-      <td>S831<br>S832</td>
-      <td>S818</td>
-      <td>17 and 12</td>
-    </tr>
-  </tbody>
-</table>
 
 
 
