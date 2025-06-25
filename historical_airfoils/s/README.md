@@ -23,8 +23,8 @@ The following table from Somers (https://docs.nrel.gov/docs/fy05osti/36340.pdf) 
       <td>1-3 m</td>
       <td>Variable speed<br>Variable pitch</td>
       <td>-</td>
-      <td>S834</td>
       <td>S833</td>
+      <td>S834</td>
       <td>S835</td>
     </tr>
     <tr>
