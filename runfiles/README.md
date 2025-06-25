@@ -41,3 +41,11 @@ These are the defaults if no value is provided for the optional inputs
 | 30  | 18e6 | 1.2 |  98       |
 | 33  | 16e6 | 1.2 |  90       |
 | 36  | 13e6 | 1.2 |  78       |
+
+
+Additional Information
+----------------------
+
+The optimization objective function may be modified in the `wt_objective.py` file.  
+
+Advanced users may also note that the current GA implementation uses a fairly high mutation rate of 30%.  This may be modified on Line 288 of the `ga_functions.py` file.
