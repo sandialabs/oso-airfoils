@@ -15,6 +15,15 @@ At present, this code has been tested on MacOS and on a Windows machine running 
 
 After installing dependencies, the airfoil optimization may be run simply by following the directions in the `runfiles` directory.
 
+The following is a quickstart:
+```
+git clone <appropriate_ssh_or_html>
+cd runfiles
+mpirun -n 8 python -m mpi4py c64_t21_l15_r122_k16_n400.py
+```
+
+On a 2022 M1 MacBook Air, this runs roughly 800 generations in 48 hours.
+
 
 Dependencies
 ------------
