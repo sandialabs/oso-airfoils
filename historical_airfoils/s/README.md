@@ -27,7 +27,8 @@ Coordinate files are from AirfoilTools.com
 <table border="1">
   <thead>
     <tr>
-      <th rowspan="2">Wind Turbine</th>
+      <th rowspan="2">Diameter</th>
+      <th rowspan="2">Type</th>
       <th rowspan="2">Airfoil-Thickness Category</th>
       <th colspan="3">Airfoil</th>
       <th rowspan="2">Reference</th>
@@ -40,7 +41,8 @@ Coordinate files are from AirfoilTools.com
   </thead>
   <tbody>
     <tr>
-      <td>3–10 m<br>Variable speed<br>Variable pitch</td>
+      <td>3–10 m</td>
+      <td>Variable speed<br>Variable pitch</td>
       <td>Thick</td>
       <td>—</td>
       <td>S822</td>
@@ -48,7 +50,8 @@ Coordinate files are from AirfoilTools.com
       <td>14</td>
     </tr>
     <tr>
-      <td>10–20 m<br>Variable speed<br>Variable pitch</td>
+      <td>10–20 m</td>
+      <td>Variable speed<br>Variable pitch</td>
       <td>Thin</td>
       <td>S801</td>
       <td>S802<br>S803</td>
@@ -56,22 +59,23 @@ Coordinate files are from AirfoilTools.com
       <td>9</td>
     </tr>
     <tr>
-      <td rowspan="2">10–20 m<br>Stall regulated</td>
+      <td rowspan="2">10–20 m</td>
+      <td rowspan="2">Stall regulated</td>
       <td>Thin</td>
       <td>S805<br>S805A</td>
       <td>S806<br>S806A</td>
       <td>S807<br>S808</td>
-      <td>—</td>
+      <td rowspan="2">13</td>
     </tr>
     <tr>
       <td>Thick</td>
       <td>S819</td>
       <td>S820</td>
       <td>S821</td>
-      <td>13</td>
     </tr>
     <tr>
-      <td rowspan="2">20–30 m<br>Stall regulated</td>
+      <td rowspan="2">20–30 m</td>
+      <td rowspan="2">Stall regulated</td>
       <td>Thick</td>
       <td>S809</td>
       <td>S810</td>
@@ -86,7 +90,8 @@ Coordinate files are from AirfoilTools.com
       <td>10 and 11</td>
     </tr>
     <tr>
-      <td>20–40 m<br>Variable speed<br>Variable pitch</td>
+      <td>20–40 m</td>
+      <td>Variable speed<br>Variable pitch</td>
       <td>—</td>
       <td>S825</td>
       <td>S826</td>
@@ -94,7 +99,8 @@ Coordinate files are from AirfoilTools.com
       <td>15 and 11</td>
     </tr>
     <tr>
-      <td>30–50 m<br>Stall regulated</td>
+      <td>30–50 m</td>
+      <td>Stall regulated</td>
       <td>Thick</td>
       <td>S816</td>
       <td>S817</td>
@@ -102,7 +108,8 @@ Coordinate files are from AirfoilTools.com
       <td>12</td>
     </tr>
     <tr>
-      <td>30–50 m<br>Stall regulated</td>
+      <td>30–50 m</td>
+      <td>Stall regulated</td>
       <td>—</td>
       <td>S827</td>
       <td>S828</td>
@@ -110,7 +117,8 @@ Coordinate files are from AirfoilTools.com
       <td>16 and 12</td>
     </tr>
     <tr>
-      <td>40–50 m<br>Variable speed<br>Variable pitch</td>
+      <td>40–50 m</td>
+      <td>Variable speed<br>Variable pitch</td>
       <td>Thick</td>
       <td>S830</td>
       <td>S831<br>S832</td>
@@ -119,6 +127,7 @@ Coordinate files are from AirfoilTools.com
     </tr>
   </tbody>
 </table>
+
 
 
 
