@@ -1,7 +1,34 @@
-Wind Turbine Airfoil Design Tools for Open-Source Offshore (OSO) airfoils.
+Wind Turbine Airfoil Design Tools for Open-Source Offshore (OSO) Airfoils
+=========================================================================
+
+This repository contains the design tools used to produce the Open-Source Offshore (OSO) Airfoils.  This project was led by Sandia National Laboratories, in collaboration with Californa State University, Long Beach (CSULB) and the National Renewable Energy Laboratory (NREL).
+
+This repository is intentionally not set up as a python package for maximimum flexiblity when running on different computing architectures and systems.  Therefore, you will see such files as `kulfan.py` replicated in many places in this repository.  These are all the same file, but the presence of multiple files allows for the folder to be copy-pasted without the need to install a package.
 
 
 
+
+Installation
+------------
+
+At present, this code has been tested on MacOS and on a Windows machine running WSL (eg, Linux).  Native Windows support is not currently expected nor gaurenteed.  Windows users are advised to set up WSL, at which point the code should run with no issues.
+
+
+Dependencies
+------------
+
+The use of these tools assumes the following dependencies, all of which should be installable with `pip install <package>` or `conda install <package>` as appropriate.
+
+- `numpy`
+- `scipy`
+- `pandas`
+- `matplotlib`
+- `mpi4py`
+- `pint`
+
+We also assume that there is an `xfoil` executable located somewhere in your path.  EG: if you typy `which xfoil` in a terminal, a pathname should be printed.  
+
+You may choose to compile XFOIL on your own from source (https://web.mit.edu/drela/Public/web/xfoil/), however, we recommend simply obtaining XFOIL through a distribution of Engineering Sketch Pad (https://acdl.mit.edu/ESP/) (readme is here: https://acdl.mit.edu/ESP/ESPreadme.txt)
 
 Citations
 ---------
