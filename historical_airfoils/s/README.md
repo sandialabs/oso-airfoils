@@ -25,7 +25,7 @@ Sources
 Coordinate files are from AirfoilTools.com
 
 
-| Item                   ||         | Price |
+| Item                   | Test     | Price |
 | :--------------------- | :------: | ----: |
 | Python Hat             |   True   | 23.99 |
 | SQL Hat                |   True   | 23.99 |
