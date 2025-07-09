@@ -123,6 +123,8 @@ Case 63:  Adding CL and rough lod into the filename
 
 Case 64:  Added pre-seeded airfoil shapes to the original population
 
+Case 65:  Added re-runs to the objective function calls
+
 
 
 Case 99: Only quick run changes
