@@ -2390,7 +2390,7 @@ def newMember(order, tau, N_samples=1):
         afl.changeOrder(order)
         K_candidate = afl.upperCoefficients.magnitude.tolist() + afl.lowerCoefficients.magnitude.tolist()
 
-        opt.append(K_candidate)
+        opt.append([K_candidate])
 
     if N_samples == 1:  
         return opt[0]

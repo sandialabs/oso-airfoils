@@ -110,6 +110,9 @@ if __name__ == '__main__':
             ins['pid'] = i
             ins['individual'] = airfoil_seeds[i]
             ins['tau'] = 0.30
+            ins['CL'] = 1.2
+            ins['rLD'] = 100
+            ins['re'] = 18e6
             # print(ins)
             results.append(airfoil_fitness(ins))
             # results.append(i)

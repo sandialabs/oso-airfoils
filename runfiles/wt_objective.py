@@ -7,6 +7,13 @@ path_to_here = pathlib.Path(__file__).parent.resolve()
 from xfoil_wrapper_noprint import run as run_xfoil
 
 def airfoil_fitness(x):
+    for i in range(0,5):
+        res = core_fitness_function(x)
+        if res[3]!= -90:
+            return res
+    return res
+
+def core_fitness_function(x):
     # ----------------------
     # unpack
     # ----------------------
@@ -14,6 +21,9 @@ def airfoil_fitness(x):
     K_upper = x['individual'][0:int(len(x['individual'])/2)]
     K_lower = x['individual'][int(len(x['individual'])/2):]
     tau = x['tau']
+    CL_in  = x['CL']
+    rLD_in = x['rLD']
+    Re_in  = x['re']
 
     try:
         design_matrix = [
@@ -27,6 +37,15 @@ def airfoil_fitness(x):
             [0.33, 1.2, 0.35, 16.0e6, ],
             [0.36, 1.2, 0.20, 13.0e6, ],
         ]
+
+        if CL_in is not None:
+            cl_design = CL_in
+        else:
+            cl_design = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][1]
+        if Re_in is not None:
+            Re = Re_in
+        else:
+            Re = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][3]
 
         te_gap_lookup = {
             '15':  0.00196,
@@ -100,7 +119,10 @@ def airfoil_fitness(x):
         te_frac                                  = 0.95
         LoD_reward_threshold_clean               = objective_terms_lookup[str(int(100*tau))][0]
         LoD_reward_threshold_rough               = objective_terms_lookup[str(int(100*tau))][1]
-        LoD_reward_threshold_max_rough           = objective_terms_lookup[str(int(100*tau))][2]
+        if rLD_in is not None:
+            LoD_reward_threshold_max_rough           = rLD_in
+        else:
+            LoD_reward_threshold_max_rough           = objective_terms_lookup[str(int(100*tau))][2]
 
         rough_to_clean_mulFactor            = 1
         clean_LoD_weighting                 = 1
@@ -152,8 +174,8 @@ def airfoil_fitness(x):
         # ----------------------
         # Run Clean Data
         # ----------------------
-        cl_design = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][1]
-        Re = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][3]
+        # cl_design = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][1]
+        # Re = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][3]
         
         fastrun_clean_success = False
         res1 = run_xfoil('alfa', K_upper, K_lower, [0, 30,1], Re=Re, N_crit=9.0, xtp_u=1.0, xtp_l=1.0, TE_gap = te_gap, timelimit=15)
@@ -209,7 +231,7 @@ def airfoil_fitness(x):
         # ----------------------
         # Find alpha_design
         # ----------------------
-        cl_design = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][1]
+        # cl_design = design_matrix[[dmr[0] for dmr in design_matrix].index(tau)][1]
 
         if cl_clean[positive_peak_index_clean] > cl_design:
             alpha_design = np.interp(cl_design, 
@@ -578,7 +600,7 @@ def airfoil_fitness(x):
         # ----------------------
         con_tag = all([c==0 for c in cons])
         
-        return [
+        r_list = [
                 pid,
                 obj,
                 con_tag,
@@ -599,6 +621,13 @@ def airfoil_fitness(x):
                 Izz,
                 A,
             ] + cons 
+
+        for rix, rtv in enumerate(r_list):
+            if isinstance(rtv, units.Quantity):
+                assert(rtv.units == units.dimensionless)
+                r_list[rix] = rtv.to('dimensionless').magnitude
+
+        return r_list
     except:
         return [pid, np.inf, False, -90] + [0]*N_reported + [0]*N_constraints
 

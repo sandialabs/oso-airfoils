@@ -145,9 +145,8 @@ if rank == 0:
         pop[i] = afl.upperCoefficients.magnitude.tolist() + afl.lowerCoefficients.magnitude.tolist()
 
     randomPop = newMember(int(N_k/2),tau,N_pop-len(pop))
-
     for i in range(0,N_pop-len(pop)): 
-        pop += [randomPop[i]]#[[random.uniform(0.05,0.8)] + [random.uniform(-0.2,0.8) for j in range(0,int(N_k/2)-1)]   +   [random.uniform(-0.8,-0.05)] + [random.uniform(-0.8,0.4) for j in range(0,int(N_k/2)-1)] ] 
+        pop += randomPop[i]#[[random.uniform(0.05,0.8)] + [random.uniform(-0.2,0.8) for j in range(0,int(N_k/2)-1)]   +   [random.uniform(-0.8,-0.05)] + [random.uniform(-0.8,0.4) for j in range(0,int(N_k/2)-1)] ] 
 
     for i,p in enumerate(pop):
         afl = Kulfan(TE_gap = te_gap_lookup[str(int(100*tau))])
@@ -226,7 +225,7 @@ labels += [
     ]
 
 
-for i in range(1,1201):
+for i in range(1,801):
     if rank == 0:
         cprint('Generation %d'%(i))
         pop_cache = copy.deepcopy(pop)
