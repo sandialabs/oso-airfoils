@@ -15,7 +15,7 @@ cd <desired_parent_directory>
 mkdir oso-airfoils
 cd oso-airfoils
 git init
-git remote add -f origin git@github.com:sandialabs/oso-airfoils.git #use html if appropriate
+git remote add -f origin git@github.com:sandialabs/oso-airfoils.git
 git config core.sparseCheckout true
 echo "historical_airfoils/" >> .git/info/sparse-checkout
 echo "publications/" >> .git/info/sparse-checkout
@@ -35,6 +35,12 @@ git branch --set-upstream-to=origin/main
 ```
 
 This will take some time to index all of the files (particularly on the step that adds the origin), but will not clone any of the data files onto your hard drive.
+
+Note that the line
+```
+git remote add -f origin git@github.com:sandialabs/oso-airfoils.git
+```
+May need to use the HTML link depending on your setup.
 
 A normal clone is still possible:
 ```
