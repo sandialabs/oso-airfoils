@@ -29,6 +29,7 @@ echo "postprocessing/README.md" >> .git/info/sparse-checkout
 echo "postprocessing/kulfan.py" >> .git/info/sparse-checkout
 echo "postprocessing/postprocess.py" >> .git/info/sparse-checkout
 echo "postprocessing/cases/caselog.txt" >> .git/info/sparse-checkout
+echo "postprocessing/active" >> .git/info/sparse-checkout
 git pull origin main
 ```
 
