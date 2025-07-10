@@ -31,6 +31,7 @@ echo "postprocessing/postprocess.py" >> .git/info/sparse-checkout
 echo "postprocessing/cases/caselog.txt" >> .git/info/sparse-checkout
 echo "postprocessing/cases/active/" >> .git/info/sparse-checkout
 git pull origin main
+git branch --set-upstream-to=origin/main
 ```
 
 This will take some time to index all of the files (particularly on the step that adds the origin), but will not clone any of the data files onto your hard drive.
