@@ -11,3 +11,5 @@
 *postprocessing/cases/*.svg
 *postprocessing/cases/*.eps
 *postprocessing/cases/*.dat
+*postprocessing/cases/*/postprocessing.py
+*released_designs/*/postprocessing.py
