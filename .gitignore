@@ -10,3 +10,4 @@
 *postprocessing/cases/*.pdf
 *postprocessing/cases/*.svg
 *postprocessing/cases/*.eps
+*postprocessing/cases/*.dat
