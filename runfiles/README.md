@@ -6,8 +6,8 @@ This folder contains all of the relevant files necessary to create your own airf
 A typical workflow is as follows:
 
 1. Use the `copy_scripts.py` file to copy the `common_runner.py` script to your desired filenames (see the section below on file keycodes)
-2. Run the optimization via the following command: `mpirun -n 188 python -m mpi4py c63_t15_l15_r124_k8_n200.py` or similar
-    - Note that fewer processes are recommended for standard laptops or personal computers:  `mpirun -n 8 python -m mpi4py c63_t15_l15_r124_k8_n200.py`
+2. Run the optimization via the following command: `mpirun -n 188 python -m mpi4py c65_t21_l15_r122_k16_n400.py` or similar
+    - Note that fewer processes are recommended for standard laptops or personal computers:  `mpirun -n 8 python -m mpi4py c65_t15_l15_r124_k8_n200.py`
     - A reasonable personal laptop or computer can run a K=8, N=200 case in roughly 24-48 hours and produces a reasonable result
 
 

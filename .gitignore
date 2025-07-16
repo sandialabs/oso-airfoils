@@ -4,5 +4,12 @@
 *.DS_Store*
 *.ipynb_checkpoints
 *.coverage
-*postprocessing/Case_*
 *.bl
+*postprocessing/cases/**/*.png
+*postprocessing/cases/**/*.jpg
+*postprocessing/cases/**/*.pdf
+*postprocessing/cases/**/*.svg
+*postprocessing/cases/**/*.eps
+*postprocessing/cases/**/*.dat
+*postprocessing/cases/**/postprocess.py
+*released_designs/**/postprocess.py
