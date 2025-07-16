@@ -125,7 +125,7 @@ Case 64:  Added pre-seeded airfoil shapes to the original population
 
 Case 65:  Added re-runs to the objective function calls
 
-
+Case 66:  Changed naming convention for output files, handling an error in the thickness calculation
 
 Case 99: Only quick run changes
 Case 98: Changed the output to match
