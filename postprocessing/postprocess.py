@@ -2670,7 +2670,12 @@ def generateAirfoil(aflString):
 
 # ==================================================================================================================================================================
 # ==================================================================================================================================================================
-path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
+if 'released_designs' in str(path_to_here):
+    path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
+elif 'postprocessing' in str(path_to_here):
+    path_to_oso = str(path_to_here).split('oso-airfoils/postprocessing/')[0] + 'oso-airfoils'
+else:
+    raise ValueError('Unknown folder location')
 
 if sys.platform == "linux" or sys.platform == "linux2":
     # linux
@@ -2773,7 +2778,7 @@ Re = re
 
 # mpirun -n 188 python -m mpi4py postprocess.py
 # or
-# mpirun -n 8 python -m mpi4py postprocess.py 1 
+# mpirun -n 8 python -m mpi4py postprocess.py 0 1
 # to take the best airfoil in the run
 
 
@@ -2827,7 +2832,12 @@ if rank == 0:
         comparison_DU = comparisonAirfoils[tau][0]
         comparison_FFA = comparisonAirfoils[tau][1]
 
-        path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
+        if 'released_designs' in str(path_to_here):
+            path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
+        elif 'postprocessing' in str(path_to_here):
+            path_to_oso = str(path_to_here).split('oso-airfoils/postprocessing/')[0] + 'oso-airfoils'
+        else:
+            raise ValueError('Unknown folder location')
         path_to_du = path_to_oso + '/historical_airfoils/du'
         path_to_ffa = path_to_oso + '/historical_airfoils/ffa/original'
 
@@ -2892,27 +2902,30 @@ if rank == 0:
                     assert(rfoil_idx == 1)
                     rfoil_FFA['rough'] = opd
         
-        
-        path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
-        path_to_data = path_to_oso + '/released_designs/active/rfoil_data'
-
-        files = natsort.natsorted([f for f in os.listdir(path_to_data) if '.dat' in f and 'final_airfoil_%s_'%(tau) in f], alg=natsort.ns.IGNORECASE)
-
         rfoil_data = {}
         rfoil_data['clean'] = {'drag_on': None, 'drag_off': None}
         rfoil_data['rough'] = {'drag_on': None, 'drag_off': None}
 
-        for f in files:
-            if 'DragOn' in f:
-                if 'clean' in f:
-                    rfoil_data['clean']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
-                elif 'rough' in f:
-                    rfoil_data['rough']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
-            else:
-                if 'clean' in f:
-                    rfoil_data['clean']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
-                elif 'rough' in f:
-                    rfoil_data['rough']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        if 'released_designs' in str(path_to_here):
+            path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
+            path_to_data = path_to_oso + '/released_designs/active/rfoil_data'
+
+            files = natsort.natsorted([f for f in os.listdir(path_to_data) if '.dat' in f and 'final_airfoil_%s_'%(tau) in f], alg=natsort.ns.IGNORECASE)
+
+            for f in files:
+                if 'DragOn' in f:
+                    if 'clean' in f:
+                        rfoil_data['clean']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+                    elif 'rough' in f:
+                        rfoil_data['rough']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+                else:
+                    if 'clean' in f:
+                        rfoil_data['clean']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+                    elif 'rough' in f:
+                        rfoil_data['rough']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        else:
+            # no rfoil for general postprocessing
+            pass
 
         bcs = bestCandidates
 
