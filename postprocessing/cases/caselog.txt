@@ -127,6 +127,8 @@ Case 65:  Added re-runs to the objective function calls
 
 Case 66:  Changed naming convention for output files, handling an error in the thickness calculation
 
+Case 67:  Fixed an indexing issue that appeared with failures on the supercomputer
+
 Case 99: Only quick run changes
 Case 98: Changed the output to match
 Case 97: Updated most things but not the primary L/D objectives
