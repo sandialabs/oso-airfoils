@@ -2954,7 +2954,11 @@ if rank == 0:
         plt.xlabel('Generation')
         objfcn = [b[2*Nk] for b in bcs]
         zoom_center = round(objfcn[-1]/10,0)*10
-        plt.ylim([zoom_center-20,zoom_center+20])
+        try:
+            plt.ylim([zoom_center-20,zoom_center+20])
+        except:
+            # some kind of error, just default to no zoom
+            pass
         plt.xlim([0,itermax])
         plt.grid(1)
         plt.tight_layout()
