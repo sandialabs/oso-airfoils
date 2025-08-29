@@ -2668,6 +2668,52 @@ def generateAirfoil(aflString):
             raise ValueError('Could not find airfoil')
     return afl1
 
+
+# def loadRFOILdata(rfoil_AFL,pth,lookup_dict,comparison_AFL):
+#     for rfoil_idx in [0,1]:
+#         f_comp = pth + lookup_dict[comparison_AFL][rfoil_idx]
+#         data = np.genfromtxt(f_comp, skip_header=13).T
+
+#         opd = {
+#             'alpha'   : data[0]       ,
+#             'cl'      : data[1]       ,
+#             'cd'      : data[2]       ,
+#             'Re'      : data[3] * 1e6 ,
+#             'cm'      : data[4]       ,
+#             'xtr_top' : data[5]       ,
+#             'xtr_bot' : data[6]       ,
+#         }
+
+#         fx = open(f_comp,'r')
+#         fxd = fx.read()
+#         fx.close()
+#         fxdl = fxd.split('\n')
+#         fxdl8 = fxdl[7]
+#         fxdl8e = fxdl8.split()
+#         xtpu = float(fxdl8e[2])
+#         xtpl = float(fxdl8e[4])
+#         if xtpu == 1.0:
+#             assert(rfoil_idx == 0)
+#             rfoil_AFL['clean'] = opd
+#         else:
+#             assert(rfoil_idx == 1)
+#             rfoil_AFL['rough'] = opd
+
+def append_rfoil_data(rfoil_comparison, comp_afls, kwd, ix):
+    path_to_data = rfoil_comparison[kwd]['path']+'/rfoil_data'
+    files = natsort.natsorted([f for f in os.listdir(path_to_data) if '.dat' in f and comp_afls[ix] in f.lower()], alg=natsort.ns.IGNORECASE)
+    for f in files:
+        if 'DragOn' in f:
+            if 'clean' in f:
+                rfoil_comparison[kwd]['clean']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+            elif 'rough' in f:
+                rfoil_comparison[kwd]['rough']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        else:
+            if 'clean' in f:
+                rfoil_comparison[kwd]['clean']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+            elif 'rough' in f:
+                rfoil_comparison[kwd]['rough']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+
 # ==================================================================================================================================================================
 # ==================================================================================================================================================================
 if 'released_designs' in str(path_to_here):
@@ -2776,11 +2822,15 @@ plts = geo_plots
 Nk = int(N_k/2)
 Re = re
 
-# mpirun -n 188 python -m mpi4py postprocess.py
-# or
-# mpirun -n 8 python -m mpi4py postprocess.py 0 1
-# to take the best airfoil in the run
 
+# Generate the geometry plots (most common)
+# mpirun -n 8 python -m mpi4py postprocess.py 0 1
+
+# Dont Generate the geometry plots
+# mpirun -n 8 python -m mpi4py postprocess.py 0 0
+
+# Take the best airfoil in the run, not the last one
+# mpirun -n 8 python -m mpi4py postprocess.py 1 1
 
 # ==================================================================================================================================================================
 # ==================================================================================================================================================================
@@ -2808,29 +2858,8 @@ if rank == 0:
                 cafl = generateAirfoil(ca)
 
 if rank == 0:
+    airfoil_name = 'OSO_2025_WT2_T'+tau
     if per_plots:
-
-
-        lookup_dict = {
-            'ffa-w2-152'      :      ['ffaw1152_c_10e6.dat'    , 'ffaw1152_r_10e6.dat'  ] , #need to fix this
-            'ffa-w1-182'      :      ['ffaw1182_c_10e6.dat'    , 'ffaw1182_r_10e6.dat'  ] ,
-            'ffa-w3-211'      :      ['ffaw3211_c_12e6.dat'    , 'ffaw3211_r_12e6.dat'  ] ,
-            'ffa-w3-241'      :      ['ffaw3241_c_13e6.dat'    , 'ffaw3241_r_13e6.dat'  ] ,
-            'ffa-w3-270'      :      ['ffaw3270_c_16e6.dat'    , 'ffaw3270_r_16e6.dat'  ] ,
-            'ffa-w3-301'      :      ['ffaw3301_c_18e6.dat'    , 'ffaw3301_r_18e6.dat'  ] ,
-            'ffa-w3-332'      :      ['ffaw3332_c_16e6.dat'    , 'ffaw3332_r_16e6.dat'  ] ,
-            'ffa-w3-360'      :      ['ffaw3360_c_13e6.dat'    , 'ffaw3360_r_13e6.dat'  ] ,
-            'du_96-w-180'     :      ['du96w180_c_10e6.dat'    , 'du96w180_r_10e6.dat'  ] ,
-            'du_93-w-210'     :      ['du93w210_c_12e6.dat'    , 'du93w210_r_12e6.dat'  ] ,
-            'du_91-w2-250'    :      ['du91w2250_c_13e6.dat'   , 'du91w2250_r_13e6.dat' ] ,
-            'du_97-w-300'     :      ['du97w300_c_18e6.dat'    , 'du97w300_r_18e6.dat'  ] ,
-        }
-
-        rfoil_DU = {}
-        rfoil_FFA = {}
-
-        comparison_DU = comparisonAirfoils[tau][0]
-        comparison_FFA = comparisonAirfoils[tau][1]
 
         if 'released_designs' in str(path_to_here):
             path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
@@ -2838,94 +2867,70 @@ if rank == 0:
             path_to_oso = str(path_to_here).split('oso-airfoils/postprocessing/')[0] + 'oso-airfoils'
         else:
             raise ValueError('Unknown folder location')
-        path_to_du = path_to_oso + '/historical_airfoils/du'
-        path_to_ffa = path_to_oso + '/historical_airfoils/ffa/original'
 
+        rfoil_comparison = {
+            'DU'    :{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[0],'path':path_to_oso+'/historical_airfoils/du'}, 
+            'FFA'   :{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[1],'path':path_to_oso+'/historical_airfoils/ffa/original'}, 
+            'Riso-A':{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[2],'path':path_to_oso+'/historical_airfoils/riso-a'}, 
+            'Riso-B':{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[3],'path':path_to_oso+'/historical_airfoils/riso-b'}, 
+            'Riso-P':{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[4],'path':path_to_oso+'/historical_airfoils/riso-p'}, 
+            'S25'   :{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[5],'path':path_to_oso+'/historical_airfoils/s'}, 
+            'S40'   :{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': colors[6],'path':path_to_oso+'/historical_airfoils/s'},
+            'OSO'   :{ 'clean':{ 'drag_on':{}, 'drag_off':{} }, 'rough':{ 'drag_on':{}, 'drag_off':{} } , 'color': 'k'      ,'path':path_to_oso+'/released_designs/active'}, 
+        }
 
-        if comparison_DU is not None:
-            for rfoil_idx in [0,1]:
-                f_comp = path_to_du + '/rfoil_data/' + lookup_dict[comparison_DU][rfoil_idx]
-                data = np.genfromtxt(f_comp, skip_header=13).T
+        comp_afls = comparisonAirfoils[tau]
+        kwds = ['DU', 'FFA', 'Riso-A', 'Riso-B', 'Riso-P', 'S25', 'S40', 'OSO']
 
-                opd = {
-                    'alpha'   : data[0]       ,
-                    'cl'      : data[1]       ,
-                    'cd'      : data[2]       ,
-                    'Re'      : data[3] * 1e6 ,
-                    'cm'      : data[4]       ,
-                    'xtr_top' : data[5]       ,
-                    'xtr_bot' : data[6]       ,
-                }
-
-                fx = open(f_comp,'r')
-                fxd = fx.read()
-                fx.close()
-                fxdl = fxd.split('\n')
-                fxdl8 = fxdl[7]
-                fxdl8e = fxdl8.split()
-                xtpu = float(fxdl8e[2])
-                xtpl = float(fxdl8e[4])
-                if xtpu == 1.0:
-                    assert(rfoil_idx == 0)
-                    rfoil_DU['clean'] = opd
+        for ix, kwd in enumerate(kwds):
+            if kwd != 'OSO':
+                if comp_afls[ix] is not None:
+                    append_rfoil_data(rfoil_comparison, comp_afls, kwd, ix)
+                    rfoil_comparison[kwd]['name'] = comp_afls[ix]
                 else:
-                    assert(rfoil_idx == 1)
-                    rfoil_DU['rough'] = opd
+                    rfoil_comparison[kwd] = None
+            else: #OSO airfoils, force data collection
+                # append_rfoil_data(rfoil_comparison, comp_afls, kwd, ix)
+                path_to_data = rfoil_comparison[kwd]['path']+'/rfoil_data'
+                files = natsort.natsorted([f for f in os.listdir(path_to_data) if '.dat' in f and '_'+tau+'_' in f.lower()], alg=natsort.ns.IGNORECASE)
+                for f in files:
+                    if 'DragOn' in f:
+                        if 'clean' in f:
+                            rfoil_comparison[kwd]['clean']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+                        elif 'rough' in f:
+                            rfoil_comparison[kwd]['rough']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+                    else:
+                        if 'clean' in f:
+                            rfoil_comparison[kwd]['clean']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+                        elif 'rough' in f:
+                            rfoil_comparison[kwd]['rough']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
 
-        if comparison_FFA is not None:
-            for rfoil_idx in [0,1]:
-                f_comp = path_to_ffa + '/rfoil_data/' + lookup_dict[comparison_FFA][rfoil_idx]
-                data = np.genfromtxt(f_comp, skip_header=13).T
-
-                opd = {
-                    'alpha'   : data[0]       ,
-                    'cl'      : data[1]       ,
-                    'cd'      : data[2]       ,
-                    'Re'      : data[3] * 1e6 ,
-                    'cm'      : data[4]       ,
-                    'xtr_top' : data[5]       ,
-                    'xtr_bot' : data[6]       ,
-                }
-
-                fx = open(f_comp,'r')
-                fxd = fx.read()
-                fx.close()
-                fxdl = fxd.split('\n')
-                fxdl8 = fxdl[7]
-                fxdl8e = fxdl8.split()
-                xtpu = float(fxdl8e[2])
-                xtpl = float(fxdl8e[4])
-                if xtpu == 1.0:
-                    assert(rfoil_idx == 0)
-                    rfoil_FFA['clean'] = opd
-                else:
-                    assert(rfoil_idx == 1)
-                    rfoil_FFA['rough'] = opd
+                rfoil_comparison[kwd]['name'] = airfoil_name
         
-        rfoil_data = {}
-        rfoil_data['clean'] = {'drag_on': None, 'drag_off': None}
-        rfoil_data['rough'] = {'drag_on': None, 'drag_off': None}
+        # rfoil_data = {}
+        # rfoil_data['clean'] = {'drag_on': None, 'drag_off': None}
+        # rfoil_data['rough'] = {'drag_on': None, 'drag_off': None}
 
-        if 'released_designs' in str(path_to_here):
-            path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
-            path_to_data = path_to_oso + '/released_designs/active/rfoil_data'
+        # if 'released_designs' in str(path_to_here):
+        #     path_to_oso = str(path_to_here).split('oso-airfoils/released_designs/')[0] + 'oso-airfoils'
+        #     path_to_data = path_to_oso + '/released_designs/active/rfoil_data'
 
-            files = natsort.natsorted([f for f in os.listdir(path_to_data) if '.dat' in f and 'final_airfoil_%s_'%(tau) in f], alg=natsort.ns.IGNORECASE)
+        #     files = natsort.natsorted([f for f in os.listdir(path_to_data) if '.dat' in f and 'final_airfoil_%s_'%(tau) in f], alg=natsort.ns.IGNORECASE)
 
-            for f in files:
-                if 'DragOn' in f:
-                    if 'clean' in f:
-                        rfoil_data['clean']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
-                    elif 'rough' in f:
-                        rfoil_data['rough']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
-                else:
-                    if 'clean' in f:
-                        rfoil_data['clean']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
-                    elif 'rough' in f:
-                        rfoil_data['rough']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
-        else:
-            # no rfoil for general postprocessing
-            pass
+        #     for f in files:
+        #         if 'DragOn' in f:
+        #             if 'clean' in f:
+        #                 rfoil_data['clean']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        #             elif 'rough' in f:
+        #                 rfoil_data['rough']['drag_on'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        #         else:
+        #             if 'clean' in f:
+        #                 rfoil_data['clean']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        #             elif 'rough' in f:
+        #                 rfoil_data['rough']['drag_off'] = read_rfoil_file(path_to_data + '/' + f)[0]
+        # else:
+        #     # no rfoil for general postprocessing
+        #     pass
 
         bcs = bestCandidates
 
@@ -3116,24 +3121,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_clean.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['alpha'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['alpha'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:
-            plt.plot(rfoil_DU['clean']['alpha']               , rfoil_DU['clean']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            # plt.plot(rfoil_DU['rough']['alpha']               , rfoil_DU['rough']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            plt.plot(rfoil_FFA['clean']['alpha']              , rfoil_FFA['clean']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            # plt.plot(rfoil_FFA['rough']['alpha']              , rfoil_FFA['rough']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:
-            plt.plot(rfoil_data['clean']['drag_on']['alpha']  , rfoil_data['clean']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['clean']['drag_off']['alpha'] , rfoil_data['clean']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            # plt.plot(rfoil_data['rough']['drag_on']['alpha']  , rfoil_data['rough']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['rough']['drag_off']['alpha'] , rfoil_data['rough']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['alpha'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['alpha'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Clean'%(tau))
         plt.ylabel('CL')
@@ -3150,24 +3152,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_rough.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['alpha'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['alpha'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:# 
-            # plt.plot(rfoil_DU['clean']['alpha']               , rfoil_DU['clean']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            plt.plot(rfoil_DU['rough']['alpha']               , rfoil_DU['rough']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            # plt.plot(rfoil_FFA['clean']['alpha']              , rfoil_FFA['clean']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            plt.plot(rfoil_FFA['rough']['alpha']              , rfoil_FFA['rough']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:# 
-            # plt.plot(rfoil_data['clean']['drag_on']['alpha']  , rfoil_data['clean']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['clean']['drag_off']['alpha'] , rfoil_data['clean']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            plt.plot(rfoil_data['rough']['drag_on']['alpha']  , rfoil_data['rough']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['rough']['drag_off']['alpha'] , rfoil_data['rough']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['alpha'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['alpha'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Rough'%(tau))
         plt.ylabel('CL')
@@ -3186,24 +3185,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_clean.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['cd'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['cd'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:
-            plt.plot(rfoil_DU['clean']['cd']               , rfoil_DU['clean']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            # plt.plot(rfoil_DU['rough']['cd']               , rfoil_DU['rough']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            plt.plot(rfoil_FFA['clean']['cd']              , rfoil_FFA['clean']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            # plt.plot(rfoil_FFA['rough']['cd']              , rfoil_FFA['rough']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:
-            plt.plot(rfoil_data['clean']['drag_on']['cd']  , rfoil_data['clean']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['clean']['drag_off']['cd'] , rfoil_data['clean']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            # plt.plot(rfoil_data['rough']['drag_on']['cd']  , rfoil_data['rough']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['rough']['drag_off']['cd'] , rfoil_data['rough']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['cd'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['cd'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['cd'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['cd'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Clean'%(tau))
         plt.ylabel('CL')
@@ -3220,24 +3216,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_rough.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['cd'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['cd'] for v in val], [v['cl'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:# 
-            # plt.plot(rfoil_DU['clean']['cd']               , rfoil_DU['clean']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            plt.plot(rfoil_DU['rough']['cd']               , rfoil_DU['rough']['cl']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            # plt.plot(rfoil_FFA['clean']['cd']              , rfoil_FFA['clean']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            plt.plot(rfoil_FFA['rough']['cd']              , rfoil_FFA['rough']['cl']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:# 
-            # plt.plot(rfoil_data['clean']['drag_on']['cd']  , rfoil_data['clean']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['clean']['drag_off']['cd'] , rfoil_data['clean']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            plt.plot(rfoil_data['rough']['drag_on']['cd']  , rfoil_data['rough']['drag_on']['cl']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['rough']['drag_off']['cd'] , rfoil_data['rough']['drag_off']['cl'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['cd'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['cd'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['cd'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['cd'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Rough'%(tau))
         plt.ylabel('CL')
@@ -3256,24 +3249,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_clean.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['alpha'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['alpha'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:
-            plt.plot(rfoil_DU['clean']['alpha']               , rfoil_DU['clean']['cl']               / rfoil_DU['clean']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            # plt.plot(rfoil_DU['rough']['alpha']               , rfoil_DU['rough']['cl']               / rfoil_DU['rough']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            plt.plot(rfoil_FFA['clean']['alpha']              , rfoil_FFA['clean']['cl']              / rfoil_FFA['clean']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            # plt.plot(rfoil_FFA['rough']['alpha']              , rfoil_FFA['rough']['cl']              / rfoil_FFA['rough']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:
-            plt.plot(rfoil_data['clean']['drag_on']['alpha']  , rfoil_data['clean']['drag_on']['cl']  / rfoil_data['clean']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['clean']['drag_off']['alpha'] , rfoil_data['clean']['drag_off']['cl'] / rfoil_data['clean']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            # plt.plot(rfoil_data['rough']['drag_on']['alpha']  , rfoil_data['rough']['drag_on']['cl']  / rfoil_data['rough']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['rough']['drag_off']['alpha'] , rfoil_data['rough']['drag_off']['cl'] / rfoil_data['rough']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] / rfoil_comparison[kwd]['clean']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['alpha'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] / rfoil_comparison[kwd]['clean']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] / rfoil_comparison[kwd]['rough']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['alpha'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] / rfoil_comparison[kwd]['rough']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Clean'%(tau))
         plt.ylabel('L/D')
@@ -3290,24 +3280,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_rough.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['alpha'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['alpha'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:# 
-            # plt.plot(rfoil_DU['clean']['alpha']               , rfoil_DU['clean']['cl']               / rfoil_DU['clean']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            plt.plot(rfoil_DU['rough']['alpha']               , rfoil_DU['rough']['cl']               / rfoil_DU['rough']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            # plt.plot(rfoil_FFA['clean']['alpha']              , rfoil_FFA['clean']['cl']              / rfoil_FFA['clean']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            plt.plot(rfoil_FFA['rough']['alpha']              , rfoil_FFA['rough']['cl']              / rfoil_FFA['rough']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:# 
-            # plt.plot(rfoil_data['clean']['drag_on']['alpha']  , rfoil_data['clean']['drag_on']['cl']  / rfoil_data['clean']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['clean']['drag_off']['alpha'] , rfoil_data['clean']['drag_off']['cl'] / rfoil_data['clean']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            plt.plot(rfoil_data['rough']['drag_on']['alpha']  , rfoil_data['rough']['drag_on']['cl']  / rfoil_data['rough']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['rough']['drag_off']['alpha'] , rfoil_data['rough']['drag_off']['cl'] / rfoil_data['rough']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] / rfoil_comparison[kwd]['clean']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['alpha'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] / rfoil_comparison[kwd]['clean']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] / rfoil_comparison[kwd]['rough']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['alpha'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] / rfoil_comparison[kwd]['rough']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Rough'%(tau))
         plt.ylabel('L/D')
@@ -3326,24 +3313,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_clean.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['cl'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['cl'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:
-            plt.plot(rfoil_DU['clean']['cl']               , rfoil_DU['clean']['cl']               / rfoil_DU['clean']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            # plt.plot(rfoil_DU['rough']['cl']               , rfoil_DU['rough']['cl']               / rfoil_DU['rough']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            plt.plot(rfoil_FFA['clean']['cl']              , rfoil_FFA['clean']['cl']              / rfoil_FFA['clean']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            # plt.plot(rfoil_FFA['rough']['cl']              , rfoil_FFA['rough']['cl']              / rfoil_FFA['rough']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:
-            plt.plot(rfoil_data['clean']['drag_on']['cl']  , rfoil_data['clean']['drag_on']['cl']  / rfoil_data['clean']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['clean']['drag_off']['cl'] , rfoil_data['clean']['drag_off']['cl'] / rfoil_data['clean']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            # plt.plot(rfoil_data['rough']['drag_on']['cl']  , rfoil_data['rough']['drag_on']['cl']  / rfoil_data['rough']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['rough']['drag_off']['cl'] , rfoil_data['rough']['drag_off']['cl'] / rfoil_data['rough']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] / rfoil_comparison[kwd]['clean']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['cl'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] / rfoil_comparison[kwd]['clean']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] / rfoil_comparison[kwd]['rough']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['cl'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] / rfoil_comparison[kwd]['rough']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Clean'%(tau))
         plt.ylabel('L/D')
@@ -3361,24 +3345,21 @@ if rank == 0:
         iii = 0
         for ky, val in dta_rough.items():
             if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
                 alpha_plot = 0.5
             else:
+                lbl = str(ky)+'--XFOIL'
                 alpha_plot = 0.5
             if val is not None:
-                plt.plot([v['cl'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=str(ky)+'--XFOIL')
+                plt.plot([v['cl'] for v in val], [v['cl']/v['cd'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
             iii += 1
 
-        if comparison_DU is not None:# 
-            # plt.plot(rfoil_DU['clean']['cl']               , rfoil_DU['clean']['cl']               / rfoil_DU['clean']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-            plt.plot(rfoil_DU['rough']['cl']               , rfoil_DU['rough']['cl']               / rfoil_DU['rough']['cd']               , color=colors[0], alpha=1.0, ls='-', label=comparison_DU+'--RFOIL')
-        if comparison_FFA is not None:
-            # plt.plot(rfoil_FFA['clean']['cl']              , rfoil_FFA['clean']['cl']              / rfoil_FFA['clean']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-            plt.plot(rfoil_FFA['rough']['cl']              , rfoil_FFA['rough']['cl']              / rfoil_FFA['rough']['cd']              , color=colors[1], alpha=1.0, ls='-', label=comparison_FFA+'--RFOIL')
-        if rfoil_data['clean']['drag_on'] is not None:# 
-            # plt.plot(rfoil_data['clean']['drag_on']['cl']  , rfoil_data['clean']['drag_on']['cl']  / rfoil_data['clean']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            # plt.plot(rfoil_data['clean']['drag_off']['cl'] , rfoil_data['clean']['drag_off']['cl'] / rfoil_data['clean']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
-            plt.plot(rfoil_data['rough']['drag_on']['cl']  , rfoil_data['rough']['drag_on']['cl']  / rfoil_data['rough']['drag_on']['cd']  , color='k',       alpha=1.0, ls='--', label=str(ky)+'--RFOIL, Drag On')
-            plt.plot(rfoil_data['rough']['drag_off']['cl'] , rfoil_data['rough']['drag_off']['cl'] / rfoil_data['rough']['drag_off']['cd'] , color='k',       alpha=1.0, ls='-',label=str(ky)+'--RFOIL, Drag Off')
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cl'] / rfoil_comparison[kwd]['clean']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['cl'] , rfoil_comparison[kwd]['clean']['drag_off']['cl'] / rfoil_comparison[kwd]['clean']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cl'] / rfoil_comparison[kwd]['rough']['drag_on' ]['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['cl'] , rfoil_comparison[kwd]['rough']['drag_off']['cl'] / rfoil_comparison[kwd]['rough']['drag_off']['cd'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
 
         plt.title('Tau : %s , Rough'%(tau))
         plt.ylabel('L/D')
@@ -3392,6 +3373,69 @@ if rank == 0:
         plt.savefig(str(path_to_here) + os.sep + 'LD_v_CL_rough.png', dpi=250)
         plt.close()
 
+
+        # Plot CM vs Alpha curves
+        plt.figure(figsize=(12,8))
+        iii = 0
+        for ky, val in dta_clean.items():
+            if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
+                alpha_plot = 0.5
+            else:
+                lbl = str(ky)+'--XFOIL'
+                alpha_plot = 0.5
+            if val is not None:
+                plt.plot([v['alpha'] for v in val], [v['cm'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
+            iii += 1
+
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['alpha'] , rfoil_comparison[kwd]['clean']['drag_off']['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['alpha'] , rfoil_comparison[kwd]['rough']['drag_off']['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+
+        plt.title('Tau : %s , Clean'%(tau))
+        plt.ylabel('CM')
+        plt.xlabel('Alpha')
+        plt.xlim([-31,31])
+        plt.ylim([-.25,.25])
+        plt.grid(1)
+        plt.tight_layout()
+        plt.legend(loc='upper left')
+        plt.savefig(str(path_to_here) + os.sep + 'CM_v_Alpha_clean.png', dpi=250)
+        plt.close()
+        
+        plt.figure(figsize=(12,8))
+        iii = 0
+        for ky, val in dta_rough.items():
+            if ky == 'Custom Airfoil':
+                lbl = airfoil_name+'--XFOIL'
+                alpha_plot = 0.5
+            else:
+                lbl = str(ky)+'--XFOIL'
+                alpha_plot = 0.5
+            if val is not None:
+                plt.plot([v['alpha'] for v in val], [v['cm'] for v in val], color = colors[iii], alpha = alpha_plot, ls='-.', label=lbl)
+            iii += 1
+
+        for ix, kwd in enumerate(kwds):
+            if rfoil_comparison[kwd] is not None:
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['clean']['drag_on' ]['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                # plt.plot( rfoil_comparison[kwd]['clean']['drag_off']['alpha'] , rfoil_comparison[kwd]['clean']['drag_off']['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_on' ]['alpha'] , rfoil_comparison[kwd]['rough']['drag_on' ]['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='--' , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag On'  )
+                plt.plot( rfoil_comparison[kwd]['rough']['drag_off']['alpha'] , rfoil_comparison[kwd]['rough']['drag_off']['cm'] , color=rfoil_comparison[kwd]['color'] , alpha=1.0, ls='-'  , label=rfoil_comparison[kwd]['name']+'--RFOIL, Drag Off' )
+
+        plt.title('Tau : %s , Rough'%(tau))
+        plt.ylabel('CM')
+        plt.xlabel('Alpha')
+        plt.xlim([-31,31])
+        plt.ylim([-.25,.25])
+        plt.grid(1)
+        plt.tight_layout()
+        plt.legend(loc='upper left')
+        plt.savefig(str(path_to_here) + os.sep + 'CM_v_Alpha_rough.png', dpi=250)
+        plt.close()
 
 
 if rank != 0:
