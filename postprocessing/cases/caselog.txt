@@ -151,21 +151,15 @@ Case 95: Removed all constraints from 96 (kept straight rejects)
 Case 94-80: incrementally added the constraints
 
 
+Case renumbering reset after completion of the WT2 family
 
-Add more rough weighting
-penalize clean above 200? 190?
-Re-do 30%
-spar location
-Rest of family
+Case 101:  Same as case 73, sweeping out a pareto front for the airfoils
+Case 102:  Removed all performance constraints from 101 except rough and geometry
+Case 103:  Same as case 72, sweeping out a pareto front for the airfoils
+Case 104:  Removed all performance constraints from 103 except rough and geometry
 
-
-rerun the 30
-send alan the full family for run on grid
-Begin to sweep over many CL input values
-Mess with the objective function to observe behavior for paper
-Constrain the angle of attack to match existing 22mw as bonus study
-
-spar integraion from the FFA paper---Needs to integrate blade design, do not do this now
-    Write a note on this
+Case 105:  Attempting an NSGA-II algorithm on workstation
+Case 106:  Adding back the file system, N_tries, and moment flags.  Made some tweaks to the NSGA algorithm
+Case 107:  Back to the original NSGA-II Algorithm, but with double the population size
 
 
