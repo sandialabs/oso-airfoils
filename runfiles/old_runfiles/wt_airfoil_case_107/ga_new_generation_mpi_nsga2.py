@@ -235,7 +235,7 @@ def newGeneration(  fitnessFunction,
             data = np.append(data,np.array([da]).T,axis=1)
 
         # take only the top 90% of parent points, ensuring at least half of children make it to population
-        # last_parent_index = int(0.9 * len(population))
+        last_parent_index = int(len(population))
         data_combined = np.append(population[0:last_parent_index,0:-1], data, axis=0)
 
 

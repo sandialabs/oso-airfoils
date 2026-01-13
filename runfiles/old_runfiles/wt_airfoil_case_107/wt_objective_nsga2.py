@@ -163,6 +163,7 @@ def core_fitness_function(x):
         CL_36_weighting                     = 100*constraint_base_penalty
         clean_moment_weighting              = 100*constraint_base_penalty
         rough_moment_weighting              = 100*constraint_base_penalty
+        tau_violation_weighting             = 1000*constraint_base_penalty
         
         rough_constraint_penalty  = 10*constraint_base_penalty
 
@@ -483,6 +484,9 @@ def core_fitness_function(x):
         # ----------------------
         # negate because 0 is an unviolated constraint
         cons.append(int(not abs(afl_geo.tau-tau)<1e-4))
+        # for some reason this isn't holding true, so enforcing as a constraint in future cases:
+        # if not abs(afl_geo.tau-tau)<1e-4:
+        #     conpen += tau_violation_weighting * abs(afl_geo.tau-tau)
 
         # ----------------------
         # Penalize upper surface concavity (positive curvature)

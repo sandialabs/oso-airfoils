@@ -1022,13 +1022,33 @@ class Kulfan(Profile):
             
         if chord is not None:
             self.chord = chord
-        
-        
+
     def scaleThickness(self, tc_new):
         current_tc = self.tau
         cf = tc_new / current_tc
         self.upperCoefficients = self.upperCoefficients * cf
         self.lowerCoefficients = self.lowerCoefficients * cf
+
+    # def scale_res(self, cf, *args):
+    #     tau_target = args[0]
+    #     uc = copy.deepcopy(self.upperCoefficients)
+    #     lc = copy.deepcopy(self.lowerCoefficients)
+    #     self.upperCoefficients = uc * cf
+    #     self.lowerCoefficients = lc * cf
+    #     rs = self.tau - tau_target
+    #     self.upperCoefficients = uc
+    #     self.lowerCoefficients = lc
+    #     return rs
+
+    # def scaleThickness(self, tc_new):
+    #     current_tc = self.tau
+    #     cf = tc_new / current_tc
+    #     res = spo.root(self.scale_res, cf, args=(tc_new,))
+    #     if not res.success:
+    #         raise ValueError('Kulfan thickness scaling did not converge')
+    #     else:
+    #         self.upperCoefficients = self.upperCoefficients * res.x[0]
+    #         self.lowerCoefficients = self.lowerCoefficients * res.x[0]
         
     def toESP(self):
         pstr = ''

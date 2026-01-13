@@ -161,5 +161,7 @@ Case 104:  Removed all performance constraints from 103 except rough and geometr
 Case 105:  Attempting an NSGA-II algorithm on workstation
 Case 106:  Adding back the file system, N_tries, and moment flags.  Made some tweaks to the NSGA algorithm
 Case 107:  Back to the original NSGA-II Algorithm, but with double the population size
+Case 108:  Adding TE gap as a design variable and fixing the tau computations in Kulfan
+Case 109:  Adding a TE curvature constraint, reverting to old TE gaps as lower constraints
 
 
