@@ -163,5 +163,6 @@ Case 106:  Adding back the file system, N_tries, and moment flags.  Made some tw
 Case 107:  Back to the original NSGA-II Algorithm, but with double the population size
 Case 108:  Adding TE gap as a design variable and fixing the tau computations in Kulfan
 Case 109:  Adding a TE curvature constraint, reverting to old TE gaps as lower constraints
+Case 110:  Changing tempfile names for xfoil, removing tegap as a design variable (it always went to min)
 
 
