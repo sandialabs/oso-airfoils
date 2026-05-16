@@ -1,3 +1,5 @@
+<img src="oso-logo/oso_logo.svg" alt="OSO Logo" width="300"/>
+
 Wind Turbine Airfoil Design Tools for Open-Source Offshore (OSO) Airfoils
 =========================================================================
 
@@ -55,10 +57,12 @@ After installing dependencies, the airfoil optimization may be run simply by fol
 The following is a quickstart:
 ```
 cd runfiles
-mpirun -n 8 python -m mpi4py c65_t21_l15_r122_k16_n400.py
+mpirun -n 8 python -m mpi4py common_runner.py quickstart.json
 ```
 
-On a 2022 M1 MacBook Air, this runs roughly 800 generations in 48 hours.
+Note that this will move the `quickstart.json` file to the run directory.
+
+On a 2022 M1 MacBook Air, this runs roughly 500 generations in roughly 4 hours.
 
 
 Dependencies
@@ -76,6 +80,12 @@ The use of these tools assumes the following dependencies, all of which should b
 We also assume that there is an `xfoil` executable located somewhere in your path.  EG: if you type `which xfoil` in a terminal, a pathname should be printed.  
 
 You may choose to compile XFOIL on your own from source (https://web.mit.edu/drela/Public/web/xfoil/), however, we recommend simply obtaining XFOIL through a distribution of Engineering Sketch Pad (https://acdl.mit.edu/ESP/) (readme is here: https://acdl.mit.edu/ESP/ESPreadme.txt)
+
+For faster results, you may also choose to use NeuralFoil (https://github.com/peterdsharpe/NeuralFoil), which can be installed via:
+```
+pip install neuralfoil
+```
+Though NeuralFoil is valuable for obtaining quick passes, we caution that optimized shapes obtained using NeuralFoil are substantially different from those obtained using XFOIL.  NeuralFoil should not be trusted for final results in our experience.
 
 Citations
 ---------

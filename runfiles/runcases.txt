@@ -1,0 +1,8 @@
+run_nf_001.json, tau: 0.15
+run_nf_002.json, tau: 0.18
+run_nf_003.json, tau: 0.21
+run_nf_004.json, tau: 0.24
+run_nf_005.json, tau: 0.27
+run_nf_006.json, tau: 0.30
+run_nf_007.json, tau: 0.33
+run_nf_008.json, tau: 0.36
