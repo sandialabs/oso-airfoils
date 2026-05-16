@@ -164,5 +164,10 @@ Case 107:  Back to the original NSGA-II Algorithm, but with double the populatio
 Case 108:  Adding TE gap as a design variable and fixing the tau computations in Kulfan
 Case 109:  Adding a TE curvature constraint, reverting to old TE gaps as lower constraints
 Case 110:  Changing tempfile names for xfoil, removing tegap as a design variable (it always went to min)
+Case 111:  Attempt at running on the supercomputer, mixed success
+Case 112:  Complete re-write for use with Json files, objective function has been updated
+Case 113:  First attempt at running hydrofoils with the json-loaded objective function, needed further updates
+Case 114:  Running the first pass at the hydrofoils using NeuralFoil.  Updated NSGA sort.
+
 
 

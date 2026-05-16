@@ -1,4 +1,4 @@
-<img src="oso-logo/oso_logo.svg" alt="OSO Logo" width="300"/>
+<img src="oso-logo/oso_logo.svg" alt="OSO Logo" width="500"/>
 
 Wind Turbine Airfoil Design Tools for Open-Source Offshore (OSO) Airfoils
 =========================================================================
