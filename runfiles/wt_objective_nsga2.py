@@ -50,8 +50,8 @@ def core_fitness_function(x):
     N_reported    = 16
     N_constraints = 31
 
-    for iiiiii in range (0,1):
-    # try:
+    # for iiiiii in range (0,1):
+    try:
 
         cl_design = CL_in
         Re = Re_in
@@ -838,8 +838,8 @@ def core_fitness_function(x):
                 r_list[rix] = rtv.to('dimensionless').magnitude
 
         return r_list
-    # except:
-    #     return [pid, np.inf, np.inf, False, -90] + [0]*N_reported + [0]*N_constraints
+    except:
+        return [pid, np.inf, np.inf, False, -90] + [0]*N_reported + [0]*N_constraints
 
 
 
