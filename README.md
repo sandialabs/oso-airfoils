@@ -85,7 +85,7 @@ For faster results, you may also choose to use NeuralFoil (https://github.com/pe
 ```
 pip install neuralfoil
 ```
-Though NeuralFoil is valuable for obtaining quick passes, we caution that optimized shapes obtained using NeuralFoil are substantially different from those obtained using XFOIL.  NeuralFoil should not be trusted for final results in our experience.
+Though NeuralFoil is valuable for quick passes and produces reasonable results, we caution that optimized shapes obtained using NeuralFoil are notably and meaningfully different from those obtained using XFOIL.  NeuralFoil should not be trusted for final results in our experience.
 
 Citations
 ---------
