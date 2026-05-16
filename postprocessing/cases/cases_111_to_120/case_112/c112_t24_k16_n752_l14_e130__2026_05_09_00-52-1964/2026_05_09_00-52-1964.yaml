@@ -1,0 +1,519 @@
+# =============================================================================
+# =============================================================================
+# Example input file for common_runner.py
+#
+# Usage:
+#   python common_runner.py example.yaml
+#   mpirun -n 8 python -m mpi4py common_runner.py example.yaml
+#
+# Notes:
+#   - Either YAML (.yaml/.yml) or JSON (.json) files are accepted.
+#   - Required parameters: case_number, tau, N_k, N_pop.
+#   - Use `null` for parameters that should be left unset.
+#   - Floats in scientific notation must be written as `1.0e+2` (not `1e2`),
+#     otherwise PyYAML 1.1 will parse them as strings.
+#   - See JSON_PARAMETERS.md for a description of every parameter.
+# =============================================================================
+# =============================================================================
+# Basic Parameters
+# -----------------------------------------------------------------------------
+
+# The case number which is used to index various run cases
+case_number: 112
+
+# The thickness to chord ratio of the airfoil being optimized, listed as a decimal between 0.0 and 1.0
+# Has been tested between 0.15 and 0.36
+tau: 0.24
+
+# The number of design variables, split evenly between top and bottom surfaces
+# Must be an even number greater than or equal to 4
+# Maximum value of 16 recommended
+N_k: 16
+
+# The size of the Genetic Algorithm population to be used
+# Recommend at least 20 * N_k, with larger numbers being better
+N_pop: 752
+
+# The number of generations to run the Genetic Algorithm for before terminating
+# Recommended approximately 1000, but may be manually terminated early
+N_generations: 1000
+
+# The design lift coefficient for the airfoil
+# OSO Values:
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# CL      = [       1.5,        1.5,        1.5,        1.4,        1.3,        1.2,        1.2,        1.2 ]
+CL: 1.4
+
+# The design reynolds number for the airfoil
+# OSO Values:
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# Re      = [   12.0e+6,    12.0e+6,    12.0e+6,    13.0e+6,    16.0e+6,    18.0e+6,    16.0e+6,    13.0e+6 ]
+Re: 13.0e+6
+
+# The tool to be used for the optimization
+# Current selections are [ "xfoil", "neuralfoil" ]
+tool: "neuralfoil"
+
+# =============================================================================
+# =============================================================================
+# File Pathing
+# -----------------------------------------------------------------------------
+# This allows for a path to a previous run file.  If this is set, then ALL the inputs 
+# from this file will be ignored and replaced by the input values for the continuation file, 
+# EXCEPT for the number of generations (N_generations), which will be kept from the file here.
+# The N_generations in the event of a continuation file input is interpreted as the number of 
+# ADDITIONAL generations to run beyond the number that have been run to the point of the 
+# continuation file.  If you wish to continue evolving the population using the parameters in 
+# this file, you must also set the continuation_file_overwrite parameter to True.
+# A value of null or omission of this parameter starts a new run (standard behavior).
+continuation_file: null
+
+# This flag is used to overwrite the continuation of a run with parameters from this file.  
+# Setting this value to true overwrites the parameters.  A value of false or null keeps the 
+# parameters from the continuation file.  This only has an effect if a continuation file is provided.
+continuation_file_overwrite: false
+
+# The path where the output directory should be written 
+# A value of null defaults to "./"
+outfile_leader: "./"
+
+# The path to the xfoil executable
+# A value of null defaults to finding the xfoil executable on the path
+# When running on the Sandia super computer, the following may be useful:
+#    "/gpfs/ahsieh/tempfiles/xfoil"
+#    "/pscratch/ahsieh/tempfiles/xfoil"
+#    "/tscratch/ahsieh/tempfiles/xfoil"
+xfoil_path: null
+
+# The path where xfoil temporary files should be saved
+# A value of null sets this to "t_"
+# On some architectures, this must be the same location as the xfoil executable
+# When running on the Sandia super computer, the following may be useful:
+#    "/gpfs/ahsieh/tempfiles/tmp_"
+#    "/pscratch/ahsieh/tempfiles/tmp_"
+#    "/tscratch/ahsieh/tempfiles/tmp_"
+xfoil_tempfile_path_leader: "t_"
+
+# =============================================================================
+# =============================================================================
+# Objective Function Parameters
+# -----------------------------------------------------------------------------
+
+# Number of times to try the analysis run before moving on
+# Only necessary for XFOIL
+# XFOIL sometimes fails on reasonable cases, and needs a retry
+# Must be an integer >= 1 or null (which equates to a setting of 1)
+N_tries: 1
+
+# The maximum magnitude of the moment coefficient in the clean analysis condition
+# Applies in the band of alpha_design +/- cm_alpha_band
+# To apply no moment constraint, set the value to null
+# Both positive and negative values are interpreted as maximum bounds on the magnitude
+CMc_min: null
+
+# The maximum magnitude of the moment coefficient in the rough analysis condition
+# Applies in the band of alpha_design +/- cm_alpha_band
+# To apply no moment constraint, set the value to null
+# Both positive and negative values are interpreted as maximum bounds on the magnitude
+CMr_min: null
+
+# Sets a +/- band around alpha_design to search for the maximum moment coefficient magnitude
+# Necessary because high alphas will always drive moment coefficient up to a higher value
+# Recommend a value of 5.0
+cm_alpha_band: 5.0
+
+# The trailing edge gap of the airfoil in fraction of chord
+# This is an exact value
+# OSO Values
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# te_gaps = [   0.00196,    0.00230,    0.00262,    0.00751,    0.01012,    0.01140,    0.01140,    0.01140 ]
+TE_gap: 0.00751
+
+# The minimum allowable chord-normalized Ixx of the airfoil section
+# Should be a number
+# If set to null, will default to a geometry function in the code close to the values used on the OSO airfoils
+# OSO Values
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# Ixx_con = [0.00011000, 0.00017438, 0.00027518, 0.00041096, 0.00058321, 0.00079640, 0.00105795, 0.00137822 ]
+Ixx_con: 0.00041096
+
+# The minimum allowable chord-normalized Iyy of the airfoil section
+# Should be a number
+# If set to null, will default to a geometry function in the code close to the values used on the OSO airfoils
+# OSO Values
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# Iyy_con = [0.00397999, 0.00436351, 0.00493714, 0.00561409, 0.00633417, 0.00706380, 0.00779600, 0.00855043 ]
+Iyy_con: 0.00561409
+
+# The minimum allowable chord-normalized Izz of the airfoil section
+# Should be a number
+# If set to null, will default to a geometry function in the code close to the values used on the OSO airfoils
+# OSO Values
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# Izz_con = [0.00408809, 0.00454606, 0.00521632, 0.00602287, 0.00691323, 0.00785849, 0.00885328, 0.00991577 ]
+Izz_con: 0.00602287
+
+# The minimum allowable chord-normalized enclosed area of the airfoil section
+# Should be a number
+# If set to null, will default to a geometry function in the code close to the values used on the OSO airfoils
+# OSO Values
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# A_con   = [0.08700496, 0.09995900, 0.11477620, 0.13051205, 0.14660942, 0.16289864, 0.17959744, 0.19731100 ]
+A_con: 0.13051205
+
+# The minimum allowable chord-normalized leading edge of the airfoil section
+# Applied to both upper and lower leading edge radii
+# Should be a number
+# If set to null, will default to a geometry function in the code close to the values used on the OSO airfoils
+# OSO Values
+# taus    = [      0.15,       0.18,       0.21,       0.24,       0.27,       0.30,       0.33,       0.36 ]
+# ler_con = [     0.007,      0.008,       0.01,      0.025,       0.03,       0.04,       0.06,       0.08 ]
+ler_con: 0.025
+
+# The minimum allowable chord fraction for the location of the minimum radius of curvature on the upper surface
+# Considers only the range [0,min_radius_location_cutoff] 
+# Recommend leaving at null to avoid issues with rough biased airfoils
+# A value of null or omission applies a default value
+# To turn the constraint off, set the weight to a value of zero
+min_radius_location_upper: null
+
+# The minimum allowable chord fraction for the location of the minimum radius of curvature on the lower surface
+# Considers only the range [0,min_radius_location_cutoff] 
+# Recommend leaving at null to avoid issues with rough biased airfoils
+# A value of null or omission applies a default value
+# To turn the constraint off, set the weight to a value of zero
+min_radius_location_lower: null
+
+# The chord fraction cutoff for considering the location of the minimum radius of curvature on both surfaces
+# Recommend leaving at 0.08 or setting to null
+# A value of null or omission defaults to 0.08
+# To turn the constraint off, set the weight to a value of zero
+min_radius_location_cutoff: 0.08
+
+# The hard limit on the maximum lift coefficient in the clean condition.
+# Useful for stall-regulated turbines.  Should be a decimal value.  A value of null
+# for this parameter results in no constraint on the maximum lift coefficient.
+# Note: If this constraint is used, the value of lift_margin_clean_weighting should be 
+# set to zero, as the two constraints may have unintended interactions.
+cl_max_limit_clean: null
+
+# The hard limit on the maximum lift coefficient in the rough condition.
+# Useful for stall-regulated turbines.  Should be a decimal value.  A value of null
+# for this parameter results in no constraint on the maximum lift coefficient.
+# Note: If this constraint is used, the value of lift_margin_clean_weighting should be 
+# set to zero, as the two constraints may have unintended interactions.
+cl_max_limit_rough: null
+
+# The allowable minimum stall margin in both the clean and rough conditions
+# XFOIL has low confidence in predicting this number
+# Recommend 4.0, but expect significant error between this value and experimental results
+target_stall_margin: 4.0
+
+# The allowable change in lift coefficient between the clean and rough analysis conditions at the design angle of attack
+# Ex: 0.10 (recommended) allows a 10% loss in lift coefficient in the rough condition before the constraint is applied
+percent_delta_cl_from_roughness_threshold: 0.10
+
+# Allowable falloff of the L/D before the penalty function is applied
+# Checks at the design_alpha +/- alpha_falloff_offset
+# Ex: 0.15 (recommended) permits a 15 reduction in both clean and rough L/D before the constraint is enforced
+percent_LoD_falloff_threshold: 0.15
+
+# The angle of attack offset for checking the L/D fall off
+# Recommend 1.0
+alpha_falloff_offset: 1.0
+
+# Most forward chord fraction where the maximum thickness of airfoil may be located
+# Recommend 0.275 based on historical airfoils
+max_thickness_loc: 0.275
+
+# Most forward chord fraction where the maximum thickness of the upper surface may be located
+# Recommend 0.275 based on historical airfoils
+max_thickness_loc_upper: 0.275
+
+# Most forward chord fraction where the maximum thickness of the lower surface may be located
+# Strong incentive for the objective to push this forward
+# Recommend 0.275 based on historical airfoils
+max_thickness_loc_lower: 0.275
+
+# Upper limit on max(Radius_LE_upper, Radius_LE_lower) / min(Radius_LE_upper, Radius_LE_lower)
+# Recommend 1.9 based on historical airfoils
+ler_skew_factor: 1.9
+
+# The angle of the cone that forms the keep-out region
+# Cone is split with the trailing edge, centered on the camber line of the airfoil
+# Value of zero results in two parallel lines coming off of the split trailing edge
+# Recommend: [ 10.0 if tau <= 0.18, 5.0 if 0.18 <= tau <= 0.27, 0.0 if tau >= 27 ]
+cone_angle: 5.0
+
+# The chord fraction where the cone keep-out constraint begins to be enforced
+# Ex, 0.95 (recommended) enforces the keep out for the last 5% of the chord
+te_frac: 0.95
+
+# In combination with target_alpha, this provides a secondary constraint on the lift curve
+# Constrains the CL to be greater than the target value at the specified alpha in the rough analysis condition.
+# If not required, should be set to null
+# Recommended for thick airfoils (0.35 or greater)
+target_cl: null
+
+# In combination with target_cl, sets an additional performance constraint on the lift curve
+# See description above
+# Only checked if target_cl is not null
+# Must not be null if target_cl is not null
+target_alpha: null
+
+# The limit on the curvature that can be present on on the aft section of the lower surface
+# Negative values represent concave curvature (which are typical)
+# Value of -750 is recommended
+curvature_bound: -750
+
+# The chord fraction for considering the curvature bound constraint
+# Ex, value of 0.9 (recommended) considers only the last 10% of the chord
+# Needed to prevent enforcement at other locations on the airfoil
+ec_cutoff: 0.9
+
+# Limit on the minimum pressure coefficient on the airfoil, which is important for cavitation 
+# performance in water applications.  This is a blanket constraint on the minimum pressure 
+# coefficient across the entire airfoil, but is only applied at the design angle of attack
+# A value of null or omission results in no constraint
+cp_min_design: null
+
+# The minimum allowable Cp at an offset from the design angle of attack
+# This is a blanket constraint on the minimum pressure coefficient across the entire airfoil, 
+# but is only applied at the design angle of attack + the specified offset
+# A value of null or omission results in no constraint
+cp_min_at_alpha_offset: null
+
+# The angle of attack offset in degrees from the design angle of attack for the minimum pressure coefficient constraint
+# Should be less than the specified stall margin
+# Only applied if cp_min_at_alpha_offset is not null
+# # Must not be null if cp_min_at_alpha_offset is not null
+cp_min_alpha_offset: null
+
+# Limit on the minimum pressure coefficient on the airfoil, considered at all angles of attack
+# up through stall.  Applies over the entire airfoil.
+# A value of null or omission results in no constraint
+cp_min_prestall: null
+
+# =============================================================================
+# =============================================================================
+# Objective Function Weights
+# -----------------------------------------------------------------------------
+
+# These are the weights used for the objective function
+#
+# Number inputs are expected, with the following special cases:
+#             null : Removes the constraint from the objective function
+#              0.0 : Removes the constraint from the objective function
+#
+# The values in this example file were used to design the OSO airfoils and strike
+# a reasonable balance between identifying high performing designs and overly
+# constraining the problem.  We recommend leaving them unchanged unless you 
+# are attempting to study the behavior of the constraints or explicitly desiring
+# to turn off one of the constraints (in which case, the value should be set to zero).
+
+# The weighting on violation of the clean stall margin constraint
+stall_margin_clean_weighting: 1.0e+2
+
+# The weighting on violation of the rough stall margin constraint
+stall_margin_rough_weighting: 1.0e+2
+
+# The weighting on the excursion of maximum lift coefficient beyond the CL design
+# High values on this constraint will limit gust loading, but heavily penalize L/D performance 
+lift_margin_clean_weighting: 0.5
+
+# The weighting on the violation of the maximum clean lift coefficient constraint.  
+cl_max_limit_clean_weighting: 1.0e+4
+
+# The weighting on the violation of the maximum rough lift coefficient constraint.  
+cl_max_limit_rough_weighting: 1.0e+4
+
+# The weighting on the drop in lift coefficient at the design angle of attack in the rough case
+delta_cl_from_roughness_weighting: 1.0e+4
+
+# The weighting on the fall off of L/D to the left and right of the peak design L/D
+# the fall off is measured at +/-alpha_falloff_offset
+# Applied to the fall off of both the clean and rough curves
+LoD_falloff_weighting: 50.0
+
+# The weighting on violation of the minimum Ixx constraint
+# Must be large due to the small magnitude of Ixx to achieve proper scaling
+ixx_weighting: 1.0e+6
+
+# The weighting on violation of the minimum Iyy constraint
+iyy_weighting: 1.0e+4
+
+# The weighting on violation of the minimum Izz constraint
+izz_weighting: 1.0e+4
+
+# The weighting on violation of the minimum enclosed area constraint
+a_weighting: 1.0e+4
+
+# The weighting on violation of the minimum leading edge radius constraint on the upper surface
+leading_edge_radius_upper_weighting: 1.0e+3
+
+# The weighting on violation of the minimum leading edge radius constraint on the lower surface
+leading_edge_radius_lower_weighting: 1.0e+3
+
+# The weighting on violation of the location of the minimum radius of curvature on the upper surface
+min_radius_location_upper_weighting: 1.0e+4
+
+# The weighting on violation of the location of the minimum radius of curvature on the lower surface
+min_radius_location_lower_weighting: 1.0e+4
+
+# The weighting on violation of the location of the maximum thickness
+# Only penalizes if the location is forward of the max_thickness_loc value
+max_thickness_weighting: 1.0e+4
+
+# The weighting on violation of the location of the maximum thickness on the upper surface
+# Only penalizes if the location is forward of the max_thickness_loc_upper value
+max_thickness_upper_weighting: 1.0e+4
+
+# The weighting on violation of the location of the maximum thickness on the lower surface
+# Only penalizes if the location is forward of the max_thickness_loc_lower value
+# Given a higher penalty due to a strong incentive to violate this constraint
+max_thickness_lower_weighting: 5.0e+4
+
+# The weighting on violation of the skew between the upper surface leading edge radius 
+# the lower surface leading edge radius.
+radii_skew_weighting: 1.0e+3
+
+# The weighting on the penalty for upper surface concavity.  Due to the way this is 
+# computed, the magnitude of the violations are large until the edge of feasibility.
+# Therefore, this is generally one of the smaller weights
+curvature_weighting: 100
+
+# The weighting on the penalty of the lower surface aft curvature.  This enables a more
+# smooth lower surface of the airfoil 
+lower_surface_curvature_weighting: 1.0e+2
+
+# The weighting on the penalty for violating the specified trailing edge cone.  Should
+# be on the larger side due to the small magnitude of the value of the violation.
+te_cone_violation_weighting: 1.0e+5
+
+# The weighting on the violation of the secondary CL target value.  Only applies if 
+# a target value is provided
+CL_target_weighting: 1.0e+4
+
+# The weighting on the violation of the maximum magnitude of CM in the clean condition
+# Only applies if a clean moment limit is provided.
+clean_moment_weighting: 1.0e+4
+
+# The weighting on the violation of the maximum magnitude of CM in the rough condition
+# Only applies if a rough moment limit is provided.
+rough_moment_weighting: 1.0e+4
+
+# Weighting on the violation of the minimum pressure coefficient constraint at the design angle of attack
+cp_min_design_weighting: 1.0e+4
+
+# The weighting on the violation of the minimum pressure coefficient constraint at the design angle of attack + the specified offset
+cp_min_at_alpha_offset_weighting: 1.0e+4
+
+# Weighting on the violation of the minimum pressure coefficient constraint at all angles of attack up through stall
+cp_min_prestall_weighting: 1.0e+4
+
+# Blanket penalty on infeasible designs, necessary for fringe cases
+infeasibility_penalty: 1.0e+4
+
+# =============================================================================
+# =============================================================================
+# Parameters that affect airfoil analysis
+# -----------------------------------------------------------------------------
+
+# Clean
+# -----
+# N factor for transition in the clean analysis case
+N_crit_clean: 9.0
+
+# The location of forced transition (trip) on the upper surface for the clean analysis case
+xtp_u_clean: 1.0
+
+# The location of forced transition (trip) on the lower surface for the clean analysis case
+xtp_l_clean: 1.0
+
+# Minimum angle of attack considered for the clean analysis case
+# Should be low enough to capture the CL design
+# Large ranges between min and max may cause issues with XFOIL convergence
+alpha_min_clean: 0
+
+# Minimum angle of attack considered for the clean analysis case
+# Should be high enough to pass stall, but high values will cause unnecessary slow downs
+alpha_max_clean: 30
+
+# Step for angles of attack between the minimum and maximum values for the clean analysis case
+alpha_step_clean: 1
+
+# Rough
+# -----
+# N factor for transition in the rough analysis case
+N_crit_rough: 3.0
+
+# The location of forced transition (trip) on the upper surface for the rough analysis case
+# Note that XFOIL experiences numerical difficulty if this value is less than 0.05
+xtp_u_rough: 0.05
+
+# The location of forced transition (trip) on the lower surface for the rough analysis case
+# Note that XFOIL experiences numerical difficulty if this value is less than 0.05
+xtp_l_rough: 0.05
+
+# Minimum angle of attack considered for the rough analysis case
+# Should be low enough to capture the CL design
+# Large ranges between min and max may cause issues with XFOIL convergence
+alpha_min_rough: 0
+
+# Minimum angle of attack considered for the rough analysis case
+# Should be high enough to pass stall, but high values will cause unnecessary slow downs
+alpha_max_rough: 20
+
+# Step for angles of attack between the minimum and maximum values for the rough analysis case
+alpha_step_rough: 1
+
+# Other
+# -----
+# The time limit in seconds for an XFOIL case before it is automatically terminated
+# This should be at least a few seconds to allow for sweeps to complete (15 recommended)
+# Ignored if neuralfoil is being used
+xfoil_timelimit: 15
+
+# The model used in neuralfoil
+# Ignored if xfoil is being used
+# Selected from list: [ "xxsmall",	"xsmall",	"small",	"medium",	"large",	"xlarge",	"xxlarge",	"xxxlarge" ]
+# Larger models are recommended
+neuralfoil_model: "xxlarge"
+
+# Number of points used for Moment of Inertia Calculations
+# Recommended value of 20 gives less than a 1% error and is reasonably fast to compute
+N_points_moi: 20
+
+# =============================================================================
+# =============================================================================
+# Genetic Algorithm Parameters
+# -----------------------------------------------------------------------------
+
+# Sets the number of breeding crossovers between chromosomes
+# Should be at least 1, but can be higher
+# 3 recommended, probably should not exceed 10 or so
+N_crossovers: 3
+
+# Sets the probability of an individual mutating a single gene bit
+# Given the small effect a single bit flip has, can set this fairly high
+# 0.3 recommended, limited between 0.0 and 1.0, but should choose an intermediate value
+probability_of_mutation: 0.3
+
+# Sets the maximum fraction of the parent population that can progress to the next generation
+# Not especially important, but it helps diversity to put a limit on this
+# Recommend 0.7, limited between 0.0 and 1.0
+maximum_parent_fraction: 0.7
+
+# =============================================================================
+# =============================================================================
+
+
+
+
+
+
+
+
+
+
+
