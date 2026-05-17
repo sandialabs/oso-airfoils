@@ -707,7 +707,11 @@ def compare_airfoils(afl_dict_input, reynolds_numbers, turb_cases, tools, figure
 
 
 
-def rainbow_plot(path_to_data, comparison_airfoil = None, color_override = None, tools = None):
+def rainbow_plot(path_to_data, figurePath = None, comparison_airfoil = None, color_override = None, tools = None):
+    if figurePath is None:
+        data_folder = os.path.dirname(path_to_data)
+        figurePath = os.path.join(data_folder, 'rainbow_plot.png')
+
     nafl = 21
 
     data = json.load(open(path_to_data, 'r'))
@@ -747,25 +751,28 @@ def rainbow_plot(path_to_data, comparison_airfoil = None, color_override = None,
     turb_cases = [[9, 1.0, 1.0], [3, 0.05, 0.05]]
     if tools is None:
         tools = ['neuralfoil']
-    data_folder = os.path.dirname(path_to_data)
-    figurePath = os.path.join(data_folder, 'rainbow_plot.png')
+    
     compare_airfoils(afl_dict_input, reynolds_numbers, turb_cases, tools, figurePath, color_override=color_override)
 
 
 
 if __name__ == '__main__':
+
+    import pathlib
+    path_to_here = pathlib.Path(__file__).parent.resolve()
+    path_to_oso = path_to_here.parent
+    path_to_datfiles = path_to_oso / 'historical_airfoils/mhkf1/'
+
     afl_dict_input = {
         # 'mhkf1-180'  : 'mhkf1-180.dat',
-        'du180'      : '/Users/codykarcher/Dropbox/research/oso-airfoils/historical_airfoils/du/du_96-w-180.dat',
-        'FFA-W1-182' : '/Users/codykarcher/Dropbox/research/oso-airfoils/historical_airfoils/ffa/fitted/FFA-W1-182_fittedCST10.dat',
-        # 'RISO-A-18'  : '/Users/codykarcher/Dropbox/research/oso-airfoils/historical_airfoils/riso-a/riso-a-18.dat',
-        'RISO-B-17'  : '/Users/codykarcher/Dropbox/research/oso-airfoils/historical_airfoils/riso-b/riso-b-17.dat',
-        # 'RISO-P-18'  : '/Users/codykarcher/Dropbox/research/oso-airfoils/historical_airfoils/riso-p/riso-p-18.dat',
-        # 'S814'       : '/Users/codykarcher/Dropbox/research/oso-airfoils/historical_airfoils/s/s814.dat',
+        'DU-96-W-180' : str( path_to_oso / 'historical_airfoils/du/du_96-w-180.dat' ),
+        'FFA-W1-182'  : str( path_to_oso / 'historical_airfoils/ffa/fitted/FFA-W1-182_fittedCST10.dat' ),
+        'RISO-B-17'   : str( path_to_oso / 'historical_airfoils/riso-b/riso-b-17.dat' ),
+        'S831'        : str( path_to_oso / 'historical_airfoils/s/s831.dat' ),
         }
 
-    reynolds_numbers = [1e6, 5e6, 10e6, 15e6]
+    reynolds_numbers = [3e6, 15e6]
     turb_cases = [[9, 1.0, 1.0], [3, 0.05, 0.05]]
-    tools = ['xfoil', 'neuralfoil']
+    tools = ['neuralfoil']
     figurePath = 'polar_comparison.png'
     compare_airfoils(afl_dict_input, reynolds_numbers, turb_cases, tools, figurePath)

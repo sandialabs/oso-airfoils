@@ -13,19 +13,12 @@ rank = comm.Get_rank()
 
 from compare_airfoils import rainbow_plot
 
-# mpirun -n 8 python -m mpi4py generate_gif.py path_to_data pareto_shapes_evolution.gif _combined_gif_frames 100 100
-# mpirun -n 8 python -m mpi4py generate_gif.py c114_t18_k16_n752_l13_e15__2026_05_13_18-25-5282 pareto_shapes_evolution.gif _combined_gif_frames 100 100
-
-
-# path_to_data = 'c112_t24_k16_n752_l14_e130_g500__2026_05_03_16-54-4457'
-# path_to_data = 'c112_t24_k16_n752_l14_e130__2026_05_09_00-52-1964'
-
-# use sys args to read in path_to_data if provided
 import sys
 # Usage:
 #   python -m mpi4py generate_gif.py <path_to_data> [output_gif_name] [frames_dir_name] [dpi] [frame_duration_ms]
 #   All arguments after path_to_data are optional.
-
+# Example:
+#   mpirun -n 8 python -m mpi4py generate_gif.py cases/cases_111_to_120/case_114/c114_t21_k16_n752_l13_e15__2026_05_14_02-12-5450 pareto_shapes_evolution.gif _combined_gif_frames 100 100
 
 path_to_data = None
 output_gif_name = 'pareto_shapes_evolution.gif'

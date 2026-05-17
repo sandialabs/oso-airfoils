@@ -19,6 +19,9 @@ from kulfan import Kulfan, units
 from wt_objective_nsga2 import core_fitness_function
 import sys
 
+# Working Example:
+#    python find_shape_functions.py cases/cases_111_to_120/case_112/c112_t24_k16_n752_l14_e130__2026_05_09_16-32-2763
+
 # ==============================================================
 # CONFIGURATION  —  all discretization choices live here
 # ==============================================================
@@ -186,6 +189,23 @@ print(f"{'='*65}")
 for i, c in enumerate(camber_poly):
     label = "r" if i == 0 else f"cby_{i-1}"
     print(f"  c[{i:2d}] ({label:6s})(x) = {_poly_str(c)}")
+
+# ---- Write coefficients to json ----
+
+def _poly_coeffs_dict(poly_list):
+    labels = ['r'] + [f'cby_{i}' for i in range(len(poly_list) - 1)]
+    return {label: poly_list[i].tolist() for i, label in enumerate(labels)}
+
+shape_function_output = [
+    {'thickness': _poly_coeffs_dict(thickness_poly)},
+    {'camber':    _poly_coeffs_dict(camber_poly)},
+    {'input_parameters': data['input_parameters']},
+]
+
+out_path = os.path.join(PATH_TO_DATA, 'shape_functions.json')
+with open(out_path, 'w') as f:
+    json.dump(shape_function_output, f, indent=4)
+print(f"Shape function coefficients written to {out_path}")
 
 
 # ---- Helper: reconstruct thickness and camber profiles at parameter x ----
