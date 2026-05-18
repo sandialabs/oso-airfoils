@@ -302,7 +302,7 @@ with open('pareto_plot_config.json', 'r') as fp:
     cfg = json.load(fp)
 
 dim_map   = cfg['data_index_mapping']
-out_dir   = 'pareto_data'
+out_dir   = str(path_to_oso / 'released_designs/pareto_data')
 os.makedirs(out_dir, exist_ok=True)
 
 for entry in cfg['data']:
