@@ -168,6 +168,7 @@ Case 111:  Attempt at running on the supercomputer, mixed success
 Case 112:  Complete re-write for use with Json files, objective function has been updated
 Case 113:  First attempt at running hydrofoils with the json-loaded objective function, needed further updates
 Case 114:  Running the first pass at the hydrofoils using NeuralFoil.  Updated NSGA sort.
+Case 115:  Running big sweeps of hydrofoil and airfoil on supercomputer
 
 
 
