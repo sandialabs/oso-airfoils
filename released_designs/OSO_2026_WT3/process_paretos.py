@@ -54,7 +54,7 @@ ROUGH_EXTREME    = 0.85
 SHOW_CPMIN       = False
 
 # Set False to skip all 6 diagnostic plots (speeds up a full re-run significantly)
-PRODUCE_DIAG_PLOTS = True
+PRODUCE_DIAG_PLOTS = False
 
 # Apply Cp_min toggle — patches polarPlot in the compare_airfoils module at import time
 _orig_polarPlot = _ca_mod.polarPlot
@@ -448,15 +448,15 @@ for tau in TAUS:
         camber_poly    = [np.polyfit(x_fit, camber_params[:, i],    POLY_DEG)
                           for i in range(camber_params.shape[1])]
 
-        shape_out = [
-            {'thickness': _poly_coeffs_dict(thickness_poly)},
-            {'camber':    _poly_coeffs_dict(camber_poly)},
-            {'meta': {
+        shape_out = {
+            'thickness': _poly_coeffs_dict(thickness_poly),
+            'camber':    _poly_coeffs_dict(camber_poly),
+            'meta': {
                 'tau': tau, 'constraint_type': ctype,
                 'TE_gap': te_gap, 'CBY_ORDER': CBY_ORDER, 'POLY_DEG': POLY_DEG,
                 'N_PARETO_SAMPLES': N_PARETO_SAMPLES,
-            }},
-        ]
+            },
+        }
         sf_path = out_dir / 'shape_functions.json'
         with open(sf_path, 'w') as f:
             json.dump(shape_out, f, indent=4)
