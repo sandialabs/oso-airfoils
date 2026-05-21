@@ -87,7 +87,7 @@
     "percent_delta_cl_from_roughness_threshold": 0.05,
     "CL": 1.3,
     "Re": 1500000.0,
-    "TE_gap": 0.00262,
+    "TE_gap": 0.022399999999999996,
     "Ixx_con": 0.00027518,
     "Iyy_con": 0.00493714,
     "Izz_con": 0.00521632,

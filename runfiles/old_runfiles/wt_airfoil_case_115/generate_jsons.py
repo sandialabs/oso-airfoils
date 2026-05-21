@@ -186,8 +186,6 @@ tau_data_dict_ht_3 = {
     }
 }
 
-# Write wind turbine files
-
 ctr = 1
 fnames = []
 runstr = "mpirun -n %d python -m mpi4py common_runner.py %s"
@@ -205,6 +203,7 @@ for i, dtdct in enumerate([tau_data_dict_ht_1, tau_data_dict_ht_2, tau_data_dict
             write_dict[ky] = vl
         
         write_dict['tau'] = tau
+        write_dict['TE_gap'] = 0.0192 * tau/0.18
 
         if tau == 0.36:
             write_dict['target_cl'] = dtdct[tau]['CL'] + 0.3
@@ -262,6 +261,7 @@ for i, dtdct in enumerate([tau_data_dict_ht_1, tau_data_dict_ht_2, tau_data_dict
             write_dict[ky] = vl
 
         write_dict['tau'] = tau
+        write_dict['TE_gap'] = 0.0192 * tau/0.18
 
         if tau == 0.36:
             write_dict['target_cl'] = dtdct[tau]['CL'] + 0.3
