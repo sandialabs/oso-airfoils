@@ -1,0 +1,380 @@
+{
+    "data": [
+        {
+            "data_location": [
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t21_l15_k16_g2000_n752_x3_s3__2026_02_26_09-47",
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_109/c109_t21_l15_k16_g2000_n752__2026_01_07_12-47"
+            ],
+            "color": "#0065cc",
+            "label": "$\\tau=0.21$ Unconstrained",
+            "linestyle": "-",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": [
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t24_l14_k16_g2000_n752_x3_s1__2026_03_03_16-50"
+            ],
+            "color": "#eea800",
+            "label": "$\\tau=0.24$ Unconstrained",
+            "linestyle": "-",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": [
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t27_l13_k16_g2000_n752_x3_s2__2026_02_26_09-49",
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t27_l13_k16_g2000_n752_m14_p14__2026_02_21_12-43"
+            ],
+            "color": "#009e73",
+            "label": "$\\tau=0.27$ Unconstrained",
+            "linestyle": "-",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": [
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t30_l12_k16_g2000_n752_x3_s3__2026_02_26_09-54",
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t30_l12_k16_g2000_n752_m14_p14__2026_02_27_13-34"
+            ],
+            "color": "#d55e00",
+            "label": "$\\tau=0.30$ Unconstrained",
+            "linestyle": "-",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": [
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t33_l12_k16_g2000_n752_x3_s1__2026_02_26_10-01",
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t33_l12_k16_g2000_n752_m14_p14__2026_03_05_10-37"
+            ],
+            "color": "#7860aa",
+            "label": "$\\tau=0.33$ Unconstrained",
+            "linestyle": "-",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": [
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t36_l12_k16_g2000_n752_x3_s2__2026_02_26_10-12",
+                "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_111_to_120/case_111/c111_t36_l12_k16_g2000_n752_m14_p14__2026_03_12_23-29"
+            ],
+            "color": "#ede13f",
+            "label": "$\\tau=0.36$ Unconstrained",
+            "linestyle": "-",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t21_l15_k16_g2000_n752_m14_p14__2026_01_17_08-45",
+            "color": "#0065cc",
+            "label": "$\\tau=0.21$ Moment Constrained",
+            "linestyle": "-.",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t24_l14_k16_g2000_n752_m14_p14__2026_01_22_11-18",
+            "color": "#eea800",
+            "label": "$\\tau=0.24$ Moment Constrained",
+            "linestyle": "-.",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t27_l13_k16_g2000_n752_m14_p14__2026_02_21_12-43",
+            "color": "#009e73",
+            "label": "$\\tau=0.27$ Moment Constrained",
+            "linestyle": "-.",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t30_l12_k16_g2000_n752_m14_p14__2026_02_27_13-34",
+            "color": "#d55e00",
+            "label": "$\\tau=0.30$ Moment Constrained",
+            "linestyle": "-.",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_101_to_110/case_110/c110_t33_l12_k16_g2000_n752_m14_p14__2026_03_05_10-37",
+            "color": "#7860aa",
+            "label": "$\\tau=0.33$ Moment Constrained",
+            "linestyle": "-.",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data_location": "/Users/codykarcher/Dropbox/research/oso-airfoils/postprocessing/cases/cases_111_to_120/case_111/c111_t36_l12_k16_g2000_n752_m14_p14__2026_03_12_23-29",
+            "color": "#ede13f",
+            "label": "$\\tau=0.36$ Moment Constrained",
+            "linestyle": "-.",
+            "linewidth": 2.0,
+            "marker": null
+        },
+        {
+            "data": [
+                248.2,
+                120.2
+            ],
+            "color": "#0065cc",
+            "label": "WT2 $\\tau=0.21$ RFOIL",
+            "linestyle": null,
+            "marker": "o",
+            "markersize": 8
+        },
+        {
+            "data": [
+                183.9,
+                118.1
+            ],
+            "color": "#eea800",
+            "label": "WT2 $\\tau=0.24$ RFOIL",
+            "linestyle": null,
+            "marker": "o",
+            "markersize": 8
+        },
+        {
+            "data": [
+                172.5,
+                112.2
+            ],
+            "color": "#009e73",
+            "label": "WT2 $\\tau=0.27$ RFOIL",
+            "linestyle": null,
+            "marker": "o",
+            "markersize": 8
+        },
+        {
+            "data": [
+                167.4,
+                97.4
+            ],
+            "color": "#d55e00",
+            "label": "WT2 $\\tau=0.30$ RFOIL",
+            "linestyle": null,
+            "marker": "o",
+            "markersize": 8
+        },
+        {
+            "data": [
+                163.1,
+                87.1
+            ],
+            "color": "#7860aa",
+            "label": "WT2 $\\tau=0.33$ RFOIL",
+            "linestyle": null,
+            "marker": "o",
+            "markersize": 8
+        },
+        {
+            "data": [
+                157.1,
+                75.4
+            ],
+            "color": "#ede13f",
+            "label": "WT2 $\\tau=0.36$ RFOIL",
+            "linestyle": null,
+            "marker": "o",
+            "markersize": 8
+        },
+        {
+            "data": [
+                255.8,
+                122.2
+            ],
+            "color": "#0065cc",
+            "label": "WT2 $\\tau=0.21$ XFOIL",
+            "linestyle": null,
+            "marker": "X",
+            "markersize": 8
+        },
+        {
+            "data": [
+                175.2,
+                118.0
+            ],
+            "color": "#eea800",
+            "label": "WT2 $\\tau=0.24$ XFOIL",
+            "linestyle": null,
+            "marker": "X",
+            "markersize": 8
+        },
+        {
+            "data": [
+                182.0,
+                109.0
+            ],
+            "color": "#009e73",
+            "label": "WT2 $\\tau=0.27$ XFOIL",
+            "linestyle": null,
+            "marker": "X",
+            "markersize": 8
+        },
+        {
+            "data": [
+                177.8,
+                98.0
+            ],
+            "color": "#d55e00",
+            "label": "WT2 $\\tau=0.30$ XFOIL",
+            "linestyle": null,
+            "marker": "X",
+            "markersize": 8
+        },
+        {
+            "data": [
+                166.6,
+                90.0
+            ],
+            "color": "#7860aa",
+            "label": "WT2 $\\tau=0.33$ XFOIL",
+            "linestyle": null,
+            "marker": "X",
+            "markersize": 8
+        },
+        {
+            "data": [
+                159.7,
+                78.1
+            ],
+            "color": "#ede13f",
+            "label": "WT2 $\\tau=0.36$ XFOIL",
+            "linestyle": null,
+            "marker": "X",
+            "markersize": 8
+        }
+    ],
+    "legend_entries": [
+        [
+            {
+                "text": "$\\tau=0.21$",
+                "linecolor": "#0065cc",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "$\\tau=0.24$",
+                "linecolor": "#eea800",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "$\\tau=0.27$",
+                "linecolor": "#009e73",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "$\\tau=0.30$",
+                "linecolor": "#d55e00",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "$\\tau=0.33$",
+                "linecolor": "#7860aa",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "$\\tau=0.36$",
+                "linecolor": "#ede13f",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            }
+        ],
+        [
+            {
+                "text": "Unconstrained",
+                "linecolor": "k",
+                "linestyle": "-",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "Moment Constrained",
+                "linecolor": "k",
+                "linestyle": "-.",
+                "linewidth": 2.0,
+                "marker": null,
+                "markersize": null
+            },
+            {
+                "text": "OSO-2025-WT2 RFOIL",
+                "linecolor": "k",
+                "linestyle": null,
+                "linewidth": 2.0,
+                "marker": "o",
+                "markersize": 8
+            },
+            {
+                "text": "OSO-2025-WT2 XFOIL",
+                "linecolor": "k",
+                "linestyle": null,
+                "linewidth": 2.0,
+                "marker": "X",
+                "markersize": 8
+            }
+        ]
+    ],
+    "plot_metadata": {
+        "title": "Pareto Plots for an IEA 22MW Airfoil Family",
+        "xlim": [
+            70,
+            135
+        ],
+        "ylim": [
+            90,
+            300
+        ],
+        "xlabel": "Rough L/D",
+        "ylabel": "Clean L/D",
+        "grid": true,
+        "savefilename": "pareto_plot.png",
+        "dpi": 300,
+        "legend_fontsize": 10,
+        "legend_loc": "upper left",
+        "fontsize": 14,
+        "figsize": [
+            12,
+            9
+        ]
+    },
+    "te_gap_lookup": {
+        "15": 0.00196,
+        "18": 0.0023,
+        "21": 0.00262,
+        "24": 0.00751,
+        "27": 0.01012,
+        "30": 0.0114,
+        "33": 0.0114,
+        "36": 0.0114
+    },
+    "data_index_mapping": {
+        "standard": {
+            "obj1ix": 21,
+            "obj2ix": 20
+        },
+        "exceptions": {
+            "c109_t21_l15_k16_g2000_n752__2026_01_07_12-47": {
+                "obj1ix": 22,
+                "obj2ix": 21
+            }
+        }
+    }
+}
